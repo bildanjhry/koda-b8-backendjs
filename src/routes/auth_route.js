@@ -1,11 +1,8 @@
 import { Router } from "express";
+import * as authControllers from "../controllers/auth.ctrl.js"
 
 const authRoutes = Router()
-authRoutes.get("", function(req, res){
-  res.status(200).json({
-    success:true,
-    message:"Hello World"
-  })  
-})
+authRoutes.post("/register", authControllers.Register)
+authRoutes.post("/login", authControllers.Login)
 
 export default authRoutes
