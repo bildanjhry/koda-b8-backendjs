@@ -3,12 +3,12 @@ import { pool } from "../config/db.js"
 export async function createUser(data) {
   const client = await pool.connect();
   try {
-    await client.query("BEGIN");
+    await client.query("BEGIN")
 
     const userRes = await client.query(
       `INSERT INTO "users" ("email", "password") 
       VALUES ($1, $2) RETURNING id, created_at`, [data.email, data.password]
-    );
+    )
 
     const user = userRes.rows[0]
 
@@ -22,14 +22,13 @@ export async function createUser(data) {
         [user.id, 1]
     )
 
-    await client.query("COMMIT");
+    await client.query("COMMIT")
     return user
   } catch (err) {
-    await client.query("ROLLBACK");
-    console.error(err);
-    throw err;
+    await client.query("ROLLBACK")
+    throw new Error(err.message)
   } finally {
-    client.release();
+    client.release()
   }
 }
 

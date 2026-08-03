@@ -1,4 +1,5 @@
 import { pool } from "../config/db.js";
+import slugify from "../libs/slugify.js";
 
 export async function findAllProd(params) {
     const finalPage = (params.page * params.limit) - params.limit
@@ -13,6 +14,25 @@ export async function findProdBySlugs(slugs) {
 }
 
 export async function createProduct(data) {
-    const res = []
-    return []
+    const client = await pool.connect()
+    try{
+        await client.query("BEGIN")
+        
+        const prodRes = await client.query(`INSERT INTO "products",
+        ("title", "price", "description", "image", "alt") VALUES 
+        ($1, $2, $3, $4, $5) RETURNING id`, [data.title, data.price, data.description, data.image, data.alt])
+
+        const prod = prodRes.rows[0]
+        await client.query(`INSERT INTO "products" ("slugs") VALUES ($1)`, [slugify(data.title, prod.id)])
+
+        await client.query("COMMIT")
+        return {
+            id:prod.id,
+        }
+    } catch(err){
+        await client.query("ROLLBACK")
+        throw new Error(err.message)
+    } finally {
+        client.release
+    }
 }
