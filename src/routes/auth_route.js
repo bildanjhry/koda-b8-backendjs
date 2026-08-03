@@ -17,7 +17,7 @@ const authRoutes = Router()
  *           schema:
  *            type: object
  *            properties:
- *               name:
+ *               fullname:
  *                 type: string
  *               email:
  *                 type: string
