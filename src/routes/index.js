@@ -2,6 +2,8 @@ import { Router } from "express"
 import authRoutes from "./auth_route.js"
 import swaggerUi from "swagger-ui-express"
 import swaggerJSDoc from "swagger-jsdoc"
+import prodRoutes from "./prod_route.js"
+import authMiddleware from "../middlewares/auth.js"
 
 const swaggerOpt = {
   definition: {
@@ -11,12 +13,13 @@ const swaggerOpt = {
       version: "1.0.0",
       description: "API Documetation for BeliMudah web app",
     },
-    component: {
+    components: {
       securitySchemes: {
         token: {
           type: "apiKey",
           name: "Authorization",
-          in: "header"
+          in: "header",
+          description:`Insert Bearer before token`
         }
       }
     }
@@ -28,6 +31,7 @@ const swagger = swaggerJSDoc(swaggerOpt)
 
 const routes = Router()
 routes.use("/auth", authRoutes)
+routes.use("/products", prodRoutes)
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagger))
 
 export default routes
