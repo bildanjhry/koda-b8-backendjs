@@ -1,14 +1,11 @@
 import { constants } from "http2"
-
+import qs from "qs"
 import * as prodServices from "../services/prod.svc.js"
 
 export async function GetAllProducts(req, res) {
     try {
-        const params = {
-            page:1,
-            limit:5
-        }
-        const response = await prodServices.findAllProd(params)
+        const queryParams = qs.parse(req.query)
+        const response = await prodServices.findAllProd(queryParams)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true, 
             message: "Get All data",

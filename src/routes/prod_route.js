@@ -10,6 +10,21 @@ const prodRoutes = Router()
  *     description: Get All Products
  *     tags:
  *      - Products
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 5
+ *         description: Number of items per page
  *     responses:
  *        "200":
  *          description: Success Get All Products

@@ -1,7 +1,6 @@
 import * as prodRepository from "../repository/prod.repo.js"
 
 export async function findAllProd(params){
-    console.log(params)
     const res = await prodRepository.findAllProd(params)
     return {
         page:params.page,
