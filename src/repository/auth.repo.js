@@ -39,3 +39,8 @@ export async function login(data){
         WHERE email = $1`, [data.email])
     return res.rows[0]
 }
+
+export async function forgotPass(data){
+    const res = await pool.query(`SELECT "id", "password" FROM "users" WHERE email = $1`, [data.email])
+    return res.rows[0]
+}

@@ -23,3 +23,10 @@ export async function login(data) {
         token:token
     }
 }
+
+export async function forgotPass(data){
+    const response = await authRepository.forgotPass(data)
+    if(!response){
+        throw new Error("User not found")
+    }
+}

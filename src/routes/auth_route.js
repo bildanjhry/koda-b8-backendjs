@@ -60,4 +60,28 @@ authRoutes.post("/register", authControllers.Register)
 */
 authRoutes.post("/login", authControllers.Login)
 
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *  post:
+ *   description: Forgot Password
+ *   tags:
+ *     - Auth
+ *   requestBody:
+ *     description: Renew Passoword
+ *     content:
+ *        application/x-www-form-urlencoded:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *   responses:
+ *     "200":
+ *       description: Success Renew Password
+ *     "404":
+ *       description: Email not found 
+*/
+authRoutes.post("/forgot-password", authControllers.ForgotPass)
+
 export default authRoutes
