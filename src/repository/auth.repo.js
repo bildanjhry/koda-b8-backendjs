@@ -1,6 +1,5 @@
 import { pool } from "../config/db.js"
 
-
 export async function createUser(data) {
   const client = await pool.connect();
   try {
