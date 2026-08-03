@@ -26,7 +26,24 @@ export async function GetProductDetails(req, res) {
         res.status(constants.HTTP_STATUS_OK).json({
             success: true, 
             message: "Success get Product",
-            resulst:response
+            results:response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false, 
+            message: err.message
+        })
+    }
+}
+
+export async function AddProduct(req, res) {
+    try{
+        const data = req.body
+        const response = prodServices.createProduct(data)
+        res.status(constants.HTTP_STATUS_CREATED).json({
+            success: true, 
+            message:"Success Add Product",
+            results: response
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({

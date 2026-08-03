@@ -18,3 +18,7 @@ export async function findProdBySlugs(slugs){
         throw new Error("Product not found")
     }
 }
+
+export async function createProduct(data) {
+    return await prodRepository.createProduct(data)
+}

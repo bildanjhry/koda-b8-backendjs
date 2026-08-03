@@ -8,7 +8,11 @@ export async function findAllProd(params) {
 }
 
 export async function findProdBySlugs(slugs) {
-    console.log(slugs)
     const res = await pool.query(`SELECT * FROM "products" WHERE slugs = $1`, [slugs])
     return res.rows[0]
+}
+
+export async function createProduct(data) {
+    const res = []
+    return []
 }
