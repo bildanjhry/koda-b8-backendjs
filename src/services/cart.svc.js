@@ -19,3 +19,7 @@ export async function findCartDetail(id) {
     }
     return res
 }
+
+export async function createCart(id_user, data) {
+    return await cartRepository.createCart(id_user, data)
+}

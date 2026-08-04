@@ -61,4 +61,32 @@ cartRoutes.get("", permissionsMiddleware, cartControllers.GetAllCart)
 cartRoutes.get("/:id", cartControllers.GetCartDetail)
 
 
+/**
+ * @swagger
+ * /carts:
+ *   post:
+ *     description: Add new cart items
+ *     tags:
+ *      - Carts
+ *     requestBody:
+ *       description: Add new cart items
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *             schema:
+ *                type: object
+ *                properties:
+ *                   id_product:
+ *                     type: integer
+ *                   quantity:
+ *                     type: integer
+ *     responses:
+ *      "200": 
+ *        description: Success add cart items
+ *      "500":
+ *        description: Internal server error
+ *     security:
+ *        - token: []
+ */
+cartRoutes.post("", cartControllers.CreateCart)
+
 export default cartRoutes

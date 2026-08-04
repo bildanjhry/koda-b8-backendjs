@@ -39,3 +39,21 @@ export async function GetCartDetail(req, res) {
         })
     }
 }
+
+export async function CreateCart(req, res) {
+    try{
+      const id_user = req.data.id
+      const data = req.body
+      const response = await cartServices.createCart(id_user, data)
+      res.status(constants.HTTP_STATUS_CREATED).json({
+        success: true,
+        message: "Success Add to Cart",
+        results: response
+      })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
