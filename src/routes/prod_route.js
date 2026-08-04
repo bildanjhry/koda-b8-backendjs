@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as prodControllers from "../controllers/prod.ctrl.js"
 import authMiddleware from "../middlewares/auth.js";
+import permissionsMiddleware from "../middlewares/permissions.js";
 
 const prodRoutes = Router()
 /**
@@ -54,5 +55,41 @@ prodRoutes.get("", prodControllers.GetAllProducts)
  *          description: Products not found
  */
 prodRoutes.get("/:slugs", prodControllers.GetProductDetails)
+
+
+/**
+ * @swagger
+ * /products:
+ *   post:
+ *     description: Add new product
+ *     tags:
+ *      - Products
+ *     requestBody:
+ *       description: Add new product
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *             schema:
+ *                type: object
+ *                properties:
+ *                   title:
+ *                     type: string
+ *                   price:
+ *                     type: integer
+ *                   image:
+ *                     type: string
+ *                     format: binary
+ *                   alt:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *     responses:
+ *      "200": 
+ *        description: Success add product
+ *      "500":
+ *        description: Internal server error
+ *     security:
+ *        - token: []
+ */
+prodRoutes.post("", authMiddleware, permissionsMiddleware, prodControllers.AddProduct)
 
 export default prodRoutes

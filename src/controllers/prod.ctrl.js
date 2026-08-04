@@ -39,7 +39,8 @@ export async function GetProductDetails(req, res) {
 export async function AddProduct(req, res) {
     try{
         const data = req.body
-        const response = prodServices.createProduct(data)
+        const response = await prodServices.createProduct(data)
+        console.log(response)
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true, 
             message:"Success Add Product",
