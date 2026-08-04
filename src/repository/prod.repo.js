@@ -21,7 +21,7 @@ export async function createProduct(data) {
         const prodRes = await client.query(`INSERT INTO "products"
         ("title", "price", "description", "image", "alt") VALUES 
         ($1, $2, $3, $4, $5) RETURNING id`, [data.title, data.price, data.description, data.image, data.alt])
-
+        
         const prod = prodRes.rows[0]
         await client.query(`UPDATE "products" SET slugs = $1 WHERE id = $2`, [slugify(data.title, prod.id), prod.id])
 

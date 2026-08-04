@@ -1,3 +1,4 @@
+import slugify from "../libs/slugify.js"
 import * as prodRepository from "../repository/prod.repo.js"
 
 export async function findAllProd(params){
@@ -19,6 +20,7 @@ export async function findProdBySlugs(slugs){
     }
 }
 
-export async function createProduct(data) {
+export async function createProduct(data, image) {
+    data.image = image
     return await prodRepository.createProduct(data)
 }

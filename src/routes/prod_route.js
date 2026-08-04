@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as prodControllers from "../controllers/prod.ctrl.js"
 import authMiddleware from "../middlewares/auth.js";
 import permissionsMiddleware from "../middlewares/permissions.js";
+import uploadMiddleware from "../middlewares/upload.js";
 
 const prodRoutes = Router()
 /**
@@ -67,7 +68,7 @@ prodRoutes.get("/:slugs", prodControllers.GetProductDetails)
  *     requestBody:
  *       description: Add new product
  *       content:
- *         application/x-www-form-urlencoded:
+ *         multipart/form-data:
  *             schema:
  *                type: object
  *                properties:
@@ -75,7 +76,7 @@ prodRoutes.get("/:slugs", prodControllers.GetProductDetails)
  *                     type: string
  *                   price:
  *                     type: integer
- *                   image:
+ *                   file:
  *                     type: string
  *                     format: binary
  *                   alt:
@@ -90,6 +91,10 @@ prodRoutes.get("/:slugs", prodControllers.GetProductDetails)
  *     security:
  *        - token: []
  */
-prodRoutes.post("", authMiddleware, permissionsMiddleware, prodControllers.AddProduct)
+prodRoutes.post("", 
+    authMiddleware, 
+    permissionsMiddleware, 
+    uploadMiddleware("file"),
+    prodControllers.AddProduct)
 
 export default prodRoutes

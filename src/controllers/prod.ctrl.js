@@ -39,8 +39,8 @@ export async function GetProductDetails(req, res) {
 export async function AddProduct(req, res) {
     try{
         const data = req.body
-        const response = await prodServices.createProduct(data)
-        console.log(response)
+        const imagePath = req?.file?.path || ""
+        const response = await prodServices.createProduct(data, imagePath)
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true, 
             message:"Success Add Product",
