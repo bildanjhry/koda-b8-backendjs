@@ -7,3 +7,11 @@ export async function addCategory(data){
 export async function getAllCategory() {
     return await catRepository.findAllCat()
 }
+
+export async function getCatDetail(id) {
+    const res = await catRepository.findCatDetail(parseInt(id))
+    if(!res){
+        throw new Error("Category not found")
+    }
+    return res
+}

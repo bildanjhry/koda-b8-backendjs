@@ -12,3 +12,9 @@ export async function findAllCat(){
          FROM "categories"`)
     return res.rows
 }
+
+export async function findCatDetail(id){
+    const res = await pool.query(`SELECT "id", "name", "created_at", "updated_at"
+         FROM "categories" WHERE id=$1`, [id])
+    return res.rows[0]
+}

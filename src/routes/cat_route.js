@@ -43,4 +43,26 @@ catRoutes.post("", catControllers.AddCategory)
  *        description: Internal Server Error
 */
 catRoutes.get("", catControllers.GetAllCategory)
+
+/**
+ * @swagger
+ * /categories/{id}:
+ *    get:
+ *     description: Get Categories details
+ *     tags:
+ *      - Categories
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Category's id
+ *     responses:
+ *       "200":
+ *         description: Success Get Categories Detail
+ *       "400":
+ *         description: Category not found
+*/
+catRoutes.get("/:id", catControllers.GetCatDetail)
 export default catRoutes

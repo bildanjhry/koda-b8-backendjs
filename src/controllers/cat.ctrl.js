@@ -37,3 +37,20 @@ export async function GetAllCategory(req, res){
         })
     }
 }
+
+export async function GetCatDetail(req, res) {
+    try{
+        const id = req.params.id
+        const response = await catServices.getCatDetail(id)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success Get Category",
+            results: response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
