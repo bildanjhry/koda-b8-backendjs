@@ -57,3 +57,20 @@ export async function CreateCart(req, res) {
         })
     }
 }
+
+export async function GetCartItemsDetail(req, res) {
+    try{
+        const id_cart = req.params.id
+        const response = await cartServices.findCartItemsDetail(id_cart)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success Get Cart Items",
+            result:response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            message:err.message
+        })
+    }
+}

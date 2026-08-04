@@ -36,3 +36,8 @@ export async function createCart(id_user, data) {
         client.release()
     }
 }
+
+export async function getCartItemById(id_cart) {
+    const res = await pool.query(`SELECT * FROM "cart_items" WHERE id_cart = $1`, [id_cart])
+    return res.rows[0]
+}

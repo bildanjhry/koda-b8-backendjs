@@ -10,6 +10,7 @@ import cartRoutes from "./cart_route.js"
 import sizesRoutes from "./sizes_route.js"
 import colorsRoutes from "./colors_route.js"
 import prodVarRoutes from "./product_var_route.js"
+import cartItemsRoutes from "./cart_items_route.js"
 
 const swaggerOpt = {
   definition: {
@@ -44,6 +45,7 @@ routes.use("/carts", cartRoutes)
 routes.use("/sizes", sizesRoutes)
 routes.use("/colors", colorsRoutes)
 routes.use("/products-variants", prodVarRoutes)
+routes.use("/carts-items", cartItemsRoutes)
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagger))
 
 export default routes

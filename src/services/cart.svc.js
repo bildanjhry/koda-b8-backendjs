@@ -23,3 +23,11 @@ export async function findCartDetail(id) {
 export async function createCart(id_user, data) {
     return await cartRepository.createCart(id_user, data)
 }
+
+export async function findCartItemsDetail(id_cart) {
+    const res = await cartRepository.getCartItemById(parseInt(id_cart))
+    if(!res){
+        throw new Error("Data not found")
+    }
+    return res
+}
