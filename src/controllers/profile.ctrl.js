@@ -37,3 +37,21 @@ export async function GetProfileDetail(req, res) {
         })
     }
 }
+
+
+export async function UpdateProfile(req, res) {
+    try{
+        const id = req.params.id
+        const data = req.body
+        const response = await profileServices.updateProfile(id, data)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success update profile",
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false, 
+            message:err.message
+        })
+    }
+}

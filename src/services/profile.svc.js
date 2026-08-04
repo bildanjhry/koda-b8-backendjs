@@ -14,6 +14,7 @@ export async function getProfileDetail(id) {
         fullname: res.fullname,
         username: res.username,
         phone: res.phone,
+        email: res.email,
         address: res.address_ID,
         created_at: res.created_at,
         updated_at: res.updated_at,
@@ -23,5 +24,12 @@ export async function getProfileDetail(id) {
             create_at: res.cart_created,
             updated_at: res.cart_updated
         }
+    }
+}
+
+export async function updateProfile(id, data) {
+    const res = await profileRepository.updateProfile(parseInt(id), data)
+    if(res === 0){
+        throw new Error("Failed update profile")
     }
 }
