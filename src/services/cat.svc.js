@@ -15,3 +15,11 @@ export async function getCatDetail(id) {
     }
     return res
 }
+
+export async function updateCat(id, data) {
+    const res = await catRepository.updateCat(parseInt(id), data)
+    if(!res){
+        throw new Error("Category not found")
+    }
+    return res
+}

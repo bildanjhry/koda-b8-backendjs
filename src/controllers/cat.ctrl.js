@@ -54,3 +54,22 @@ export async function GetCatDetail(req, res) {
         })
     }
 }
+
+export async function UpdateCat(req, res) {
+    try{
+        const id = req.params.id
+        const data = req.body
+        console.log(id+" "+ data)
+        const response = await catServices.updateCat(id, data)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success updated Category",
+            results: response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            message: err.message
+        })
+    }
+}

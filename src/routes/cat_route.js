@@ -2,7 +2,6 @@ import { Router } from "express"
 import * as catControllers from "../controllers/cat.ctrl.js"
 
 const catRoutes = Router()
-
 /**
  * @swagger
  * /categories:
@@ -26,6 +25,8 @@ const catRoutes = Router()
  *          description: Success add new category
  *       "400":
  *          description: Invalid input
+ *     security:
+ *       - token: []
 */
 catRoutes.post("", catControllers.AddCategory)
 
@@ -65,4 +66,39 @@ catRoutes.get("", catControllers.GetAllCategory)
  *         description: Category not found
 */
 catRoutes.get("/:id", catControllers.GetCatDetail)
+
+/**
+ * @swagger
+ * /categories/{id}:
+ *   patch:
+ *     description: Update Category
+ *     tags:
+ *       - Categories
+ *     parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          schema:
+ *             type: string
+ *          description: Category's Id
+ *     requestBody:
+ *       description: Update Category
+ *       content:
+ *          application/x-www-form-urlencoded:
+ *              schema:
+ *                 type: object
+ *                 required:
+ *                    - name
+ *                 properties:
+ *                    name:
+ *                      type: string
+ *     responses:
+ *       "200":
+ *          description: Success update category
+ *       "400":
+ *          description: Invalid input
+ *     security:
+ *       - token: []
+*/
+catRoutes.patch("/:id", catControllers.UpdateCat)
 export default catRoutes

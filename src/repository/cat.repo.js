@@ -18,3 +18,10 @@ export async function findCatDetail(id){
          FROM "categories" WHERE id=$1`, [id])
     return res.rows[0]
 }
+
+export async function updateCat(id, data) {
+    const res = await pool.query(`UPDATE "categories" SET name = $1, updated_at = NOW() WHERE id = $2 
+        RETURNING id, name, updated_at`, 
+        [data.name, id])
+    return res.rows[0]
+}
