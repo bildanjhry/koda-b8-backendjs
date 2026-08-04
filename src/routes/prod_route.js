@@ -25,8 +25,8 @@ const prodRoutes = Router()
  *         required: false
  *         schema:
  *           type: integer
- *           default: 5
- *         description: Number of items per page
+ *           default: 20
+ *         description: Limit data
  *     responses:
  *        "200":
  *          description: Success Get All Products

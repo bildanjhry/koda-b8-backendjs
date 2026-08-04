@@ -6,6 +6,7 @@ import prodRoutes from "./prod_route.js"
 import authMiddleware from "../middlewares/auth.js"
 import catRoutes from "./cat_route.js"
 import profileRoutes from "./profile_route.js"
+import cartRoutes from "./cart_route.js"
 
 const swaggerOpt = {
   definition: {
@@ -36,6 +37,7 @@ routes.use("/auth", authRoutes)
 routes.use("/categories", catRoutes)
 routes.use("/products", prodRoutes)
 routes.use("/profiles", profileRoutes)
+routes.use("/carts", cartRoutes)
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagger))
 
 export default routes
