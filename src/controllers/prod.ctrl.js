@@ -53,3 +53,22 @@ export async function AddProduct(req, res) {
         })
     }
 }
+
+export async function UpdateProduct(req, res) {
+    try{
+        const data = req.body
+        const id = req.params.id
+        const imagePath = req?.file?.path || ""
+        const response = await prodServices.updateProduct(id, data, imagePath)
+        res.status(constants.HTTP_STATUS_CREATED).json({
+            success: true, 
+            message:"Success Update Product",
+            results: response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false, 
+            message: err.message
+        })
+    }
+}

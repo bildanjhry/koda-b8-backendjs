@@ -24,3 +24,8 @@ export async function createProduct(data, image) {
     data.image = image
     return await prodRepository.createProduct(data)
 }
+
+export async function updateProduct(id, data, image) {
+    data.image = image
+    return await prodRepository.updateProduct(id, data)
+}

@@ -18,7 +18,6 @@ export default function uploadMiddleware(fieldName) {
         storage: storage,
         limits: { fileSize: 2 * 1024 * 1024 },
         fileFilter: function (req, file, cb) {
-            console.log("multer")
             const fileExt = file.mimetype.split("/")[1]
             if (fileExt !== 'png' && fileExt !== 'jpg' && fileExt !== 'jpeg') {
                 return cb(new Error("Wrong type"));

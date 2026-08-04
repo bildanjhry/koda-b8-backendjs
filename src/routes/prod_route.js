@@ -97,4 +97,50 @@ prodRoutes.post("",
     uploadMiddleware("file"),
     prodControllers.AddProduct)
 
+/**
+ * @swagger
+ * /products/{id}:
+ *   patch:
+ *     description: Update data product
+ *     tags:
+ *      - Products
+ *     parameters:
+ *        - in: path
+ *          name: id
+ *          description: product's id
+ *          required: true
+ *          schema:
+ *             type: string
+ *     requestBody:
+ *       description: Update data product
+ *       content:
+ *         multipart/form-data:
+ *             schema:
+ *                type: object
+ *                properties:
+ *                   title:
+ *                     type: string
+ *                   price:
+ *                     type: integer
+ *                   file:
+ *                     type: string
+ *                     format: binary
+ *                   alt:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *     responses:
+ *      "200": 
+ *        description: Success add product
+ *      "500":
+ *        description: Internal server error
+ *     security:
+ *        - token: []
+ */
+prodRoutes.patch("/:id", 
+    authMiddleware, 
+    permissionsMiddleware, 
+    uploadMiddleware("file"),
+    prodControllers.UpdateProduct)
+
 export default prodRoutes
