@@ -21,3 +21,19 @@ export async function AddCategory(req, res) {
         })
     }
 }
+
+export async function GetAllCategory(req, res){
+    try{
+        const response = await catServices.getAllCategory()
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true, 
+            message:"Success Get All Categories",
+            results: response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_NOT_FOUND).json({
+            success: false, 
+            message: err.message
+        })
+    }
+}
