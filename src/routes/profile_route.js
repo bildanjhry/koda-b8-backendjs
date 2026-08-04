@@ -20,4 +20,30 @@ const profileRoutes = Router()
  *      - token: []
 */
 profileRoutes.get("", authMiddleware, permissionsMiddleware, profileControllers.GetAllProfile)
+
+/**
+ * @swagger
+ * /profiles/{id}:
+ *   get:
+ *    description: Get all available user's profile
+ *    tags:
+ *     - Profiles
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        description: id user
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      "200":
+ *        description: Success get all profiles
+ *      "500":
+ *        description: Internal server error
+ *    security:
+ *      - token: []
+*/
+profileRoutes.get("/:id", authMiddleware, profileControllers.GetProfileDetail)
+
+
 export default profileRoutes

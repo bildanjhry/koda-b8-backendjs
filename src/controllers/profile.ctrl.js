@@ -20,3 +20,20 @@ export async function GetAllProfile(req, res) {
         })
     }
 }
+
+export async function GetProfileDetail(req, res) {
+    try{
+        const id = req.params.id
+        const response = await profileServices.getProfileDetail(id)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success get profile",
+            results:response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false, 
+            message:err.message
+        })
+    }
+}
