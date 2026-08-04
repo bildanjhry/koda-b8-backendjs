@@ -22,3 +22,20 @@ export async function GetAllCart(req, res) {
         })
     }
 }
+
+export async function GetCartDetail(req, res) {
+    try{
+        const id = req.params.id
+        const response = await cartServices.findCartDetail(id)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success Get All User's Cart",
+            result:response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            message:err.message
+        })
+    }
+}

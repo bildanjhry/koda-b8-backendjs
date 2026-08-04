@@ -11,3 +11,11 @@ export async function findAllCart(params) {
         data: res
     }
 }
+
+export async function findCartDetail(id) {
+    const res = await cartRepository.findCartDetail(parseInt(id))
+    if(!res){
+        throw new Error("Cart not found")
+    }
+    return res
+}

@@ -7,3 +7,9 @@ export async function findAllCart(params) {
     return res.rows
 
 }
+
+export async function findCartDetail(id) {
+    const res = await pool.query(`SELECT * FROM "cart" WHERE id = $1`,
+        [id])
+    return res.rows[0]
+}

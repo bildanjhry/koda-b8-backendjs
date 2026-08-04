@@ -36,4 +36,29 @@ cartRoutes.use(authMiddleware)
  */
 cartRoutes.get("", permissionsMiddleware, cartControllers.GetAllCart)
 
+/**
+ * @swagger
+ * /carts/{id}:
+ *    get:
+ *     description: Get Carts details
+ *     tags:
+ *      - Carts
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          description: Cart's id
+ *          required: true
+ *          schema:
+ *            type: string
+ *     responses:
+ *        "200":
+ *          description: Success Get User's cart
+ *        "400":
+ *          description: Cart not found
+ *     security:
+ *        - token: []
+ */
+cartRoutes.get("/:id", cartControllers.GetCartDetail)
+
+
 export default cartRoutes
