@@ -1,5 +1,7 @@
 import { Router } from "express"
 import * as catControllers from "../controllers/cat.ctrl.js"
+import authMiddleware from "../middlewares/auth.js"
+import permissionsMiddleware from "../middlewares/permissions.js"
 
 const catRoutes = Router()
 /**
@@ -28,7 +30,7 @@ const catRoutes = Router()
  *     security:
  *       - token: []
 */
-catRoutes.post("", catControllers.AddCategory)
+catRoutes.post("", authMiddleware, permissionsMiddleware, catControllers.AddCategory)
 
 /**
  * @swagger
@@ -100,5 +102,5 @@ catRoutes.get("/:id", catControllers.GetCatDetail)
  *     security:
  *       - token: []
 */
-catRoutes.patch("/:id", catControllers.UpdateCat)
+catRoutes.patch("/:id", authMiddleware, permissionsMiddleware, catControllers.UpdateCat)
 export default catRoutes

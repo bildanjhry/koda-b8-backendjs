@@ -17,7 +17,7 @@ export async function login(data) {
     if(!isMatch){
         throw new Error("User not found")
     }
-    const token = libsJwt.sign({id: response.id})
+    const token = libsJwt.sign({id: response.id, permissions:response.permissions})
     return {
         id:response.id,
         token:token

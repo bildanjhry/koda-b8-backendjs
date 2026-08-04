@@ -33,8 +33,9 @@ export async function createUser(data) {
 }
 
 export async function login(data){
-    const res = await pool.query(`SELECT "id", "password" FROM "users" 
-        WHERE email = $1`, [data.email])
+    const res = await pool.query(`SELECT "users"."id", "users"."password", "user_permissions"."status" AS "permissions" 
+      FROM "users" JOIN "user_permissions" ON "user_permissions"."id_user" = "users"."id" WHERE email = $1`, 
+      [data.email])
     return res.rows[0]
 }
 
