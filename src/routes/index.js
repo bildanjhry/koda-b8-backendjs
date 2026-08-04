@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express"
 import swaggerJSDoc from "swagger-jsdoc"
 import prodRoutes from "./prod_route.js"
 import authMiddleware from "../middlewares/auth.js"
+import catRoutes from "./cat_route.js"
 
 const swaggerOpt = {
   definition: {
@@ -31,6 +32,7 @@ const swagger = swaggerJSDoc(swaggerOpt)
 
 const routes = Router()
 routes.use("/auth", authRoutes)
+routes.use("/categories", catRoutes)
 routes.use("/products", prodRoutes)
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagger))
 
