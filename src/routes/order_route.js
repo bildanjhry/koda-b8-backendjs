@@ -81,6 +81,10 @@ orderRoutes.get("", orderControllers.GetAllOrder)
  *                     type: integer
  *                   price:
  *                     type: integer
+ *                   id_payment_method:
+ *                      type: integer
+ *                   id_delivery_method:
+ *                      type: integer
  *     responses:
  *      "200": 
  *        description: Success add cart items

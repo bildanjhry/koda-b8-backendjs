@@ -18,8 +18,8 @@ export async function createOrder(id_user, data) {
             WHERE id=$4`, 
             [subtotal, subtotal, 1, order.id])
 
-        await client.query(`INSERT INTO "checkout_histories" ("id_user", "id_product", "payment_method", "order_status")
-            VALUES ($1, $2, $3, $4)`, [id_user, data.id_product, "BCA Virtual Account", 1])
+        await client.query(`INSERT INTO "checkout_histories" ("id_user", "id_product", "id_payment_method", "id_delivery_method", "order_status")
+            VALUES ($1, $2, $3, $4, $5)`, [id_user, data.id_product, data.id_payment_method, data.id_delivery_method, 1])
 
         return {
             id: order.id
