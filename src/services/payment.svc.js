@@ -7,3 +7,6 @@ export async function addPayment(data) {
     }
     return res
 }
+export async function findAllPayment(params) {
+    return await paymentRepository.findAllPayment(params)
+}
