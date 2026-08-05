@@ -14,6 +14,7 @@ import cartItemsRoutes from "./cart_items_route.js"
 import orderRoutes from "./order_route.js"
 import checkoutHisRoutes from "./checkout_his_route.js"
 import paymentRoutes from "./payment_route.js"
+import deliveryRoutes from "./delivery_route.js"
 
 const swaggerOpt = {
   definition: {
@@ -52,6 +53,7 @@ routes.use("/carts-items", cartItemsRoutes)
 routes.use("/orders", orderRoutes)
 routes.use("/checkout-histories", checkoutHisRoutes)
 routes.use("/payment-methods", paymentRoutes)
+routes.use("/delivery-methods", deliveryRoutes)
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagger))
 
 export default routes
