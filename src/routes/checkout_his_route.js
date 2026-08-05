@@ -17,7 +17,34 @@ checkoutHisRoutes.use(authMiddleware)
  *        description: Success get all categories
  *      "500":
  *        description: Internal Server Error
+ *    security:
+ *      - token: []
 */
 checkoutHisRoutes.get("", permissionsMiddleware, checkoutHisCrtl.GetAllCheckoutHis)
+
+
+/**
+ * @swagger
+ * /checkout-histories/{id}:
+ *   get:
+ *    description: Get users Checkout Histories
+ *    tags:
+ *     - Checkout Histories
+ *    parameters:
+ *       - in: path
+ *         name: id
+ *         description: id
+ *         required: true
+ *         schema:
+ *            type: string
+ *    responses:
+ *      "200":
+ *        description: Success get checkout histories
+ *      "500":
+ *        description: Internal Server Error
+ *    security:
+ *      - token: []
+*/
+checkoutHisRoutes.get("/:id", checkoutHisCrtl.GetCheckoutHisById)
 
 export default checkoutHisRoutes
