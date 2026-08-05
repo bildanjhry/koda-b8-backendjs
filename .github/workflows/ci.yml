@@ -1,5 +1,5 @@
 name: CI/CD andromeda Backend
-runs-on: ${{github.actor}}'s workflow Backend
+runs-name: ${{github.actor}}'s workflow Backend
 on:
   push:
     tags:
@@ -37,5 +37,5 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           script: |
             cd app
-            docker compose pull Backend
+            docker compose pull backend
             docker compose up backend -d
