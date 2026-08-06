@@ -7,7 +7,7 @@ export async function getAllProfile() {
 }
 
 export async function getProfileDetail(id) {
-    const res = await pool.query(`SELECT "profile"."id_user", "profile"."fullname", "profile"."username", "profile"."phone", "users"."email" AS "email", "profile"."address_ID", "profile"."created_at", "profile"."updated_at", 
+    const res = await pool.query(`SELECT "profile"."id_user", "profile"."fullname", "profile"."username", "profile"."phone", "users"."email" AS "email", "profile"."created_at", "profile"."updated_at", 
         "cart"."id" AS "id_cart" , "cart"."created_at" AS "cart_created", "cart"."updated_at" AS "cart_updated" 
         FROM "profile" LEFT JOIN "cart" ON "cart"."id_user" = "profile"."id_user" JOIN "users" ON "users"."id" = "profile"."id_user" WHERE users.id = $1`, [id])
     return res.rows[0]
