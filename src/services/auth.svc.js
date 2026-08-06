@@ -10,7 +10,7 @@ export async function createUser(data){
 
 export async function login(data) {
     const response = await authRepository.login(data)
-    if(response.length < 1){
+    if(!response){
         throw new Error("User not found")
     }
     const isMatch = await libsBcrypt.comparePass(data.password, response.password)
