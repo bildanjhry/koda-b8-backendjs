@@ -4,6 +4,7 @@ import { connectDB } from "./config/db.js"
 import corsMiddleware from "./middlewares/cors.js"
 
 const app = express()
+app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded())
 app.use(corsMiddleware)
 app.use(routes)

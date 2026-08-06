@@ -18,6 +18,7 @@ export async function findProdBySlugs(slugs){
     if(!res){
         throw new Error("Product not found")
     }
+    return res
 }
 
 export async function createProduct(data, image) {

@@ -9,7 +9,36 @@ export async function findAllProd(params) {
 }
 
 export async function findProdBySlugs(slugs) {
-    const res = await pool.query(`SELECT * FROM "products" WHERE slugs = $1`, [slugs])
+    const res = await pool.query(`
+        SELECT "products"."id", "products"."title", "products_variants"."price" AS "price",
+        "products"."created_at", "products"."updated_at", "products"."slugs",
+        "reviews"."rating", "products"."image", "products"."alt",
+        json_agg( json_build_object('id', "colors"."id", 'name',"colors"."name", 'hex',"colors"."hex")) AS "avail_colors",
+        json_agg( json_build_object('id', "sizes"."id", 'name',"sizes"."name")) AS "avail_sizes",
+
+        json_agg(
+        json_build_object(
+        'id',"products_variants"."id_product",
+        'color',"colors"."name",
+        'size',"sizes"."name",
+        'rating_total',"reviews"."rating",
+        'stock',"products_variants"."stocks",
+        'SKU',"products_variants"."sku"
+        )) AS "items" 
+
+        FROM "products" 
+        JOIN "products_variants" ON "products_variants"."id_product" = "products"."id"
+        LEFT JOIN "sizes" ON "sizes"."id" = "products_variants"."id_size"
+        LEFT JOIN "colors" ON "colors"."id" = "products_variants"."id_color"
+        LEFT JOIN "reviews" ON "reviews"."id_product" = "products"."id"
+
+        WHERE slugs = $1
+        
+        GROUP BY "products"."id", "products_variants"."price", "products"."title",
+        "products"."created_at", "products"."updated_at", "reviews"."rating", "products"."slugs",
+        "products"."image", "products"."alt" 
+        `, [slugs])
+
     return res.rows[0]
 }
 
