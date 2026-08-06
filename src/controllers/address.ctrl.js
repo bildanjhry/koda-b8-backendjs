@@ -1,18 +1,18 @@
 import { constants } from "http2"
-import * as usersServices from "../services/users.svc.js"
+import * as addressServices from "../services/address.svc.js"
 import qs from "qs"
 
 /**
  * @param {import("express").Request} req
  * @param {import("express").Response} res  
 */
-export async function GetUsersCheckoutHis(req, res) {
+export async function GetAddressByUser(req, res) {
     try{
-        const queryParams = qs.parse(req.query)
-        const response = await usersServices.findUsersCheckoutHis(queryParams)
+        const id_user = req.params.id
+        const response = await addressServices.findAddresByUser(id_user)
         res.status(constants.HTTP_STATUS_OK).json({
             succes:true,
-            message: "Succes get all users checkout histories",
+            message: "Succes get user address",
             results:response
         })
     } catch(err){
@@ -23,13 +23,14 @@ export async function GetUsersCheckoutHis(req, res) {
     }
 }
 
-export async function GetAllUsers(req, res) {
+export async function CreateAddress(req, res) {
     try{
-        const queryParams = qs.parse(req.query)
-        const response = await usersServices.findAllUsers(queryParams)
+        const id = req.params.id_user
+        const data = req.body
+        const response = await addressServices.findAddresByUser(id_user)
         res.status(constants.HTTP_STATUS_OK).json({
             succes:true,
-            message: "Succes get all users",
+            message: "Succes get all users checkout histories",
             results:response
         })
     } catch(err){

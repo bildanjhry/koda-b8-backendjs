@@ -16,6 +16,7 @@ import checkoutHisRoutes from "./checkout_his_route.js"
 import paymentRoutes from "./payment_route.js"
 import deliveryRoutes from "./delivery_route.js"
 import usersRoutes from "./users_route.js"
+import addressRoutes from "./address_route.js"
 
 const swaggerOpt = {
   definition: {
@@ -56,6 +57,7 @@ routes.use("/checkout-histories", checkoutHisRoutes)
 routes.use("/payment-methods", paymentRoutes)
 routes.use("/delivery-methods", deliveryRoutes)
 routes.use("/users", usersRoutes)
+routes.use("/address", addressRoutes)
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagger))
 
 export default routes

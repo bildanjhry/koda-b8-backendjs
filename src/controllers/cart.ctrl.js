@@ -74,3 +74,22 @@ export async function GetCartItemsDetail(req, res) {
         })
     }
 }
+
+
+export async function GetCartDetailByUser(req, res) {
+    try{
+        const id_user = req.params.id_user
+        const response = await cartServices.findCartDetailByUser(id_user)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success Get Cart Items By User",
+            result:response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status:"CART_BY_USER",
+            message:err.message
+        })
+    }
+}
