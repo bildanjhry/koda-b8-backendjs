@@ -7,19 +7,30 @@ export async function createOrder(id_user, data) {
             VALUES ($1) RETURNING id, subtotal`, [id_user])
 
         const order = res.rows[0]
-        const items = await client.query(`INSERT INTO "order_items" ("id_order", "id_product", "quantity", "price")
-            VALUES ($1, $2, $3, $4) RETURNING quantity, price`,[order.id, data.id_product, data.quantity, data.price] )
-        
+
+        const values = [];
+        const params = [];
+
+        data.items.forEach((item, i) => {
+            const index = i * 3;
+            values.push(`($${index + 1}, $${index + 2}, $${index + 3})`);
+            params.push(order.id, item.id_product, item.quantity);
+        });
+
+        const items = await client.query(`INSERT INTO "order_items" ("id_order", "id_product", "quantity")
+            VALUES ${values.join(", ")} RETURNING quantity, price`, params)
+
         const itemsRes = items.rows[0]
         let start = itemsRes.subtotal || 0
         const subtotal = start + (parseInt(itemsRes.quantity) * parseInt(itemsRes.price))
 
         await client.query(`UPDATE "orders" SET subtotal=$1, total=$2, status_checkout=$3 
-            WHERE id=$4`, 
+            WHERE id=$4`,
             [subtotal, subtotal, 1, order.id])
 
-        await client.query(`INSERT INTO "checkout_histories" ("id_user", "id_product", "id_payment_method", "id_delivery_method", "order_status")
-            VALUES ($1, $2, $3, $4, $5)`, [id_user, data.id_product, data.id_payment_method, data.id_delivery_method, 1])
+        await client.query(`INSERT INTO "checkout_histories" 
+            ("id_user", "id_order", "id_checkout_address", "id_payment_method", "id_delivery_method", "id_order_status")
+            VALUES ($1, $2, $3, $4, $5)`, [id_user, data.id_order, data.id_checkout_address, data.id_payment_method, data.id_delivery_method, 1])
 
         return {
             id: order.id
