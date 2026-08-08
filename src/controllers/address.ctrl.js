@@ -25,12 +25,12 @@ export async function GetAddressByUser(req, res) {
 
 export async function CreateAddress(req, res) {
     try{
-        const id = req.params.id_user
+        const id = req.data.id
         const data = req.body
-        const response = await addressServices.findAddresByUser(id_user)
+        const response = await addressServices.addUserAddress(id, data)
         res.status(constants.HTTP_STATUS_OK).json({
             succes:true,
-            message: "Succes get all users checkout histories",
+            message: "Succes add new address",
             results:response
         })
     } catch(err){

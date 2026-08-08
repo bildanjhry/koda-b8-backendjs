@@ -7,3 +7,7 @@ export async function findAddresByUser(id_user){
     }
     return res
 }
+
+export async function addUserAddress(id_user, data) {
+    return await addressRepository.createUserAddress(id_user, data)
+}
