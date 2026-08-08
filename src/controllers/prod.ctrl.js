@@ -23,7 +23,6 @@ export async function GetProductDetails(req, res) {
     try{
         const slugs = req.params.slugs
         const response = await prodServices.findProdBySlugs(slugs)
-        console.log(response)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true, 
             message: "Success get Product",

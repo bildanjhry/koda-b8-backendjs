@@ -59,7 +59,6 @@ export async function UpdateCat(req, res) {
     try{
         const id = req.params.id
         const data = req.body
-        console.log(id+" "+ data)
         const response = await catServices.updateCat(id, data)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
