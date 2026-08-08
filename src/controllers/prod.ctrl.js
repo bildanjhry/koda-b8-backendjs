@@ -73,3 +73,22 @@ export async function UpdateProduct(req, res) {
         })
     }
 }
+
+export async function AddRatingProduct(req, res) {
+    try{
+        const id = req.params.id
+        const id_user = req.data.id
+        const data = req.body
+        const response = await prodServices.addRatingProduct(id, id_user, data)
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true, 
+            message: "Success add rating product",
+            results:response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false, 
+            message: err.message
+        })
+    }
+}

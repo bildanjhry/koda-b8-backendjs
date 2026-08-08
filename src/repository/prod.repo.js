@@ -3,16 +3,28 @@ import slugify from "../libs/slugify.js";
 
 export async function findAllProd(params) {
     const finalPage = (params.page * params.limit) - params.limit
-    const res = await pool.query(`SELECT * FROM "products" LIMIT $1 OFFSET $2`,
+    const res = await pool.query(`
+        SELECT "products"."id", "products"."id", "products"."title", "products"."price",
+        "products"."image", "products"."alt", "products"."slugs",
+        COUNT("reviews"."id_product") AS "reviews",
+        COALESCE(AVG("reviews"."rating"), 0) AS "rating"
+        FROM "products" 
+
+        LEFT JOIN "reviews" ON "reviews"."id_product" = "products"."id"
+        
+        GROUP BY "products"."id", "products"."title", "products"."price",
+        "products"."image", "products"."alt", "products"."slugs"
+        LIMIT $1 OFFSET $2
+        `,
         [params.limit, finalPage])
     return res.rows
 }
 
 export async function findProdBySlugs(slugs) {
     const res = await pool.query(`
-        SELECT "products"."id", "products"."title", "products_variants"."price" AS "price",
+        SELECT "products"."title", "products_variants"."price" AS "price",
         "products"."created_at", "products"."updated_at", "products"."slugs",
-        "reviews"."rating", "products"."image", "products"."alt",
+        "products"."image", "products"."alt", SUM("products_variants"."stocks") AS "stocks",
         json_agg( json_build_object('id', "colors"."id", 'name',"colors"."name", 'hex',"colors"."hex")) AS "avail_colors",
         json_agg( json_build_object('id', "sizes"."id", 'name',"sizes"."name")) AS "avail_sizes",
 
@@ -21,21 +33,19 @@ export async function findProdBySlugs(slugs) {
         'id',"products_variants"."id_product",
         'color',"colors"."name",
         'size',"sizes"."name",
-        'rating_total',"reviews"."rating",
         'stock',"products_variants"."stocks",
         'SKU',"products_variants"."sku"
         )) AS "items" 
 
         FROM "products" 
         JOIN "products_variants" ON "products_variants"."id_product" = "products"."id"
-        LEFT JOIN "sizes" ON "sizes"."id" = "products_variants"."id_size"
-        LEFT JOIN "colors" ON "colors"."id" = "products_variants"."id_color"
-        LEFT JOIN "reviews" ON "reviews"."id_product" = "products"."id"
+        JOIN "sizes" ON "sizes"."id" = "products_variants"."id_size"
+        JOIN "colors" ON "colors"."id" = "products_variants"."id_color"
 
         WHERE slugs = $1
         
-        GROUP BY "products"."id", "products_variants"."price", "products"."title",
-        "products"."created_at", "products"."updated_at", "reviews"."rating", "products"."slugs",
+        GROUP BY "products"."slugs", "products_variants"."price", "products"."title",
+        "products"."created_at", "products"."updated_at",
         "products"."image", "products"."alt" 
         `, [slugs])
 
@@ -95,4 +105,12 @@ export async function updateProduct(id, data) {
     } finally {
         client.release()
     }
+}
+
+export async function addRatingProduct(id, data) {
+    const res = await pool.query(`
+        INSERT INTO "reviews" ("id_product", "id_user", "rating", "comment")
+        VALUES ($1, $2, $3, $4) RETURNING id
+        `,[id, data.id_user, data.rating, data.comment])
+    return res.rows[0]
 }

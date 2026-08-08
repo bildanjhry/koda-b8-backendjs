@@ -143,4 +143,41 @@ prodRoutes.patch("/:id",
     uploadMiddleware("file"),
     prodControllers.UpdateProduct)
 
+/**
+ * @swagger
+ * /products/{id}/reviews:
+ *    post:
+ *     description: Add reviews to product
+ *     tags:
+ *      - Products
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        description: Product's id
+ *        required: true
+ *        schema:
+ *           type: string
+ *     requestBody:
+ *        description: Add reviews
+ *        content:
+ *          application/x-www-form-urlencoded:
+ *             schema:
+ *                type: object
+ *                properties:
+ *                   rating:
+ *                     type: integer
+ *                     enum: [1, 2, 3, 4, 5]
+ *                   comment:
+ *                     type: string 
+ *     responses:
+ *      "200":
+ *        description: Success add reviews
+ *      "400":
+ *        description: Product not found
+ *     security:
+ *        - token: []
+ *  
+ */    
+prodRoutes.post("/:id/reviews", authMiddleware, prodControllers.AddRatingProduct)
+
 export default prodRoutes

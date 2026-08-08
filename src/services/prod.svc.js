@@ -30,3 +30,12 @@ export async function updateProduct(id, data, image) {
     data.image = image
     return await prodRepository.updateProduct(id, data)
 }
+
+export async function addRatingProduct(id, id_user, data) {
+    data.id_user = id_user
+    const res = await prodRepository.addRatingProduct(parseInt(id), data)
+    if(!res){
+        throw new Error("Product not found")
+    }
+    return res
+}
