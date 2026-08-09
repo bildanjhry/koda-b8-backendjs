@@ -21,6 +21,8 @@ deliveryRoutes.use(authMiddleware)
  *                properties:
  *                    name:
  *                      type: string
+ *                    desc:
+ *                      type: string
  *    responses:
  *      "200":
  *        description: Success add new delivery method

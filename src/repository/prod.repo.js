@@ -31,6 +31,7 @@ export async function findProdBySlugs(slugs) {
         json_agg(
         json_build_object(
         'id',"products_variants"."id_product",
+        'id_variant', "products_variants"."id",
         'color',"colors"."name",
         'size',"sizes"."name",
         'stock',"products_variants"."stocks",

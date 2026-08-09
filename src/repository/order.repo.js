@@ -32,8 +32,6 @@ export async function createOrder(id_user, data) {
         WHERE "order_items"."id_order" = $1 
         `, [order.id]);
 
-        console.log(prod.rows[0])
-
         const itemsRes = prod.rows[0]
         let start = itemsRes.subtotal || 0
         const subtotal = start + (itemsRes.quantity * parseInt(itemsRes.price))
