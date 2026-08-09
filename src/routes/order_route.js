@@ -71,16 +71,19 @@ orderRoutes.get("", orderControllers.GetAllOrder)
  *     requestBody:
  *       description: Add new order
  *       content:
- *         application/x-www-form-urlencoded:
+ *         application/json:
  *             schema:
  *                type: object
  *                properties:
- *                   id_product:
- *                     type: integer
- *                   quantity:
- *                     type: integer
- *                   price:
- *                     type: integer
+ *                   items:
+ *                      type: array
+ *                      items:
+ *                        type: object
+ *                        properties:
+ *                           id_product:
+ *                              type: integer
+ *                           quantity:
+ *                              type: integer
  *                   id_payment_method:
  *                      type: integer
  *                   id_delivery_method:
