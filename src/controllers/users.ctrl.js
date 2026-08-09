@@ -23,6 +23,24 @@ export async function GetUsersCheckoutHis(req, res) {
     }
 }
 
+export async function GetUserCheckoutHisById(req, res) {
+    try{
+        const id_user = req.params.id
+        const response = await usersServices.findUsersCheckoutHisByid(id_user)
+        res.status(constants.HTTP_STATUS_OK).json({
+            succes:true,
+            message: "Succes get all users checkout histories",
+            results:response
+        })
+    } catch(err){
+        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
+            succes: false,
+            message:err.message
+        })
+    }
+}
+
+
 export async function GetAllUsers(req, res) {
     try{
         const queryParams = qs.parse(req.query)

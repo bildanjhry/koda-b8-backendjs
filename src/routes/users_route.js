@@ -34,6 +34,29 @@ usersRoutes.get("/checkout-histories", usersControllers.GetUsersCheckoutHis)
 
 /**
  * @swagger
+ * /users/{id}/checkout-histories:
+ *   get:
+ *    description: Get all available users checkout
+ *    tags:
+ *      - Users
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        description: Limit data
+ *    responses:
+ *      "200":
+ *        description: Success get all users's checkout histories
+ *      "500":
+ *        description: Internal server error      
+*/
+usersRoutes.get("/:id/checkout-histories", usersControllers.GetUserCheckoutHisById)
+
+
+
+/**
+ * @swagger
  * /users:
  *   get:
  *    description: Get all available users
