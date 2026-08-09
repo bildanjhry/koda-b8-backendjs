@@ -73,6 +73,8 @@ export async function findUsersCheckoutHisByid(id_user) {
         json_agg(
             json_build_object(
                 'id', "products_variants"."id",
+                'quantity',"order_items"."quantity",
+                'price',"products_variants"."price",
                 'color', "colors"."name",
                 'name', "products"."title",
                 'image', "products"."image",
