@@ -6,6 +6,7 @@ import corsMiddleware from "./middlewares/cors.js"
 const app = express()
 app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded())
+app.use(express.json())
 app.use(corsMiddleware)
 app.use(routes)
 await connectDB()
