@@ -1,59 +1,65 @@
 import { constants } from "http2"
 import * as usersServices from "../services/users.svc.js"
 import qs from "qs"
-
+import { default as db } from "../models/index.cjs"
+const { users, checkout_histories } = db
 /**
  * @param {import("express").Request} req
  * @param {import("express").Response} res  
 */
 export async function GetUsersCheckoutHis(req, res) {
-    try{
+    try {
         const queryParams = qs.parse(req.query)
         const response = await usersServices.findUsersCheckoutHis(queryParams)
         res.status(constants.HTTP_STATUS_OK).json({
-            succes:true,
+            succes: true,
             message: "Succes get all users checkout histories",
-            results:response
+            results: response
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
             succes: false,
-            message:err.message
+            message: err.message
         })
     }
 }
 
 export async function GetUserCheckoutHisById(req, res) {
-    try{
+    try {
         const id_user = req.params.id
         const response = await usersServices.findUsersCheckoutHisByid(id_user)
         res.status(constants.HTTP_STATUS_OK).json({
-            succes:true,
+            succes: true,
             message: "Succes get all users checkout histories",
-            results:response
+            results: response
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
             succes: false,
-            message:err.message
+            message: err.message
         })
     }
 }
 
 
 export async function GetAllUsers(req, res) {
-    try{
+    try {
+        const result = await users.findAll({
+            attributes: {
+                exclude: ["password"]
+            }
+        })
         const queryParams = qs.parse(req.query)
         const response = await usersServices.findAllUsers(queryParams)
         res.status(constants.HTTP_STATUS_OK).json({
-            succes:true,
+            succes: true,
             message: "Succes get all users",
-            results:response
+            results: result
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
             succes: false,
-            message:err.message
+            message: err.message
         })
     }
 }

@@ -1,92 +1,111 @@
 import { constants } from "http2"
 import qs from "qs"
 import * as prodServices from "../services/prod.svc.js"
+import { default as db } from "../models/index.cjs"
+const { products } = db
 
 export async function GetAllProducts(req, res) {
     try {
         const queryParams = qs.parse(req.query)
+        const offset = (parseInt(queryParams.page) * parseInt(queryParams.limit)) - parseInt(queryParams.limit)
+        const result = await products.findAll({
+            attributes: {
+                exclude: ["createdAt", "updatedAt"]
+            },
+            limit:queryParams.limit,
+            offset,
+            sort: 'id'
+
+        })
         const response = await prodServices.findAllProd(queryParams)
         res.status(constants.HTTP_STATUS_OK).json({
-            success: true, 
+            success: true,
             message: "Get All data",
-            ...response
+            page: queryParams.page,
+            limit: queryParams.limit,
+            total: result.length,
+            next_page: null,
+            prev_page: null,
+            data: result
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
-            success: false, 
-            message:err.message
+            success: false,
+            message: err.message
         })
     }
 }
 
 export async function GetProductDetails(req, res) {
-    try{
+    try {
         const slugs = req.params.slugs
         const response = await prodServices.findProdBySlugs(slugs)
         res.status(constants.HTTP_STATUS_OK).json({
-            success: true, 
+            success: true,
             message: "Success get Product",
-            results:response
+            results: response
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
-            success: false, 
+            success: false,
             message: err.message
         })
     }
 }
 
 export async function AddProduct(req, res) {
-    try{
+    try {
         const data = req.body
         const imagePath = req?.file?.path || ""
+        console.log(imagePath)
         const response = await prodServices.createProduct(data, imagePath)
+        console.log(response)
         res.status(constants.HTTP_STATUS_CREATED).json({
-            success: true, 
-            message:"Success Add Product",
+            success: true,
+            message: "Success Add Product",
             results: response
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
-            success: false, 
+            success: false,
             message: err.message
         })
     }
 }
 
 export async function UpdateProduct(req, res) {
-    try{
+    try {
         const data = req.body
         const id = req.params.id
         const imagePath = req?.file?.path || ""
         const response = await prodServices.updateProduct(id, data, imagePath)
         res.status(constants.HTTP_STATUS_CREATED).json({
-            success: true, 
-            message:"Success Update Product",
+            success: true,
+            message: "Success Update Product",
             results: response
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
-            success: false, 
+            success: false,
             message: err.message
         })
     }
 }
 
 export async function AddRatingProduct(req, res) {
-    try{
+    try {
         const id = req.params.id
         const id_user = req.data.id
         const data = req.body
         const response = await prodServices.addRatingProduct(id, id_user, data)
         res.status(constants.HTTP_STATUS_OK).json({
-            success: true, 
+            success: true,
             message: "Success add rating product",
-            results:response
+            results: response
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
-            success: false, 
+            success: false,
             message: err.message
         })
     }

@@ -1,45 +1,56 @@
 import { constants } from "http2"
 import * as colorsServices from "../services/colors.svc.js"
+import { default as db } from "../models/index.cjs"
+const { colors } = db
 
 /**
  * @param {import("express").Request} req
  * @param {import("expresss").Response} res  
 */
 export async function AddColor(req, res) {
-    try{
+    try {
         const data = req.body
-        const response = await colorsServices.addColor(data)
+        const { name, hex } = req.body
+        const result = await colors.create({
+            name: name,
+            hex: hex
+        }, {
+            returning: true
+        }
+        )
+        //const response = await colorsServices.addColor(data)
         res.status(constants.HTTP_STATUS_CREATED).json({
-            success: true, 
+            success: true,
             message: "Success Add Color",
-            results: response
+            results: result
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
-            success: false, 
+            success: false,
             message: err.message
         })
     }
 }
 
-export async function GetAllColors(req, res){
-    try{
+export async function GetAllColors(req, res) {
+    try {
+        const result = await colors.findAll()
         const response = await colorsServices.getAllColors()
         res.status(constants.HTTP_STATUS_OK).json({
-            success: true, 
-            message:"Success Get All Colors",
-            results: response
+            success: true,
+            message: "Success Get All Colors",
+            results: result
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_NOT_FOUND).json({
-            success: false, 
+            success: false,
             message: err.message
         })
     }
 }
 
 export async function GetColorDetail(req, res) {
-    try{
+    try {
         const id = req.params.id
         const response = await colorsServices.getColorDetail(id)
         res.status(constants.HTTP_STATUS_OK).json({
@@ -47,7 +58,7 @@ export async function GetColorDetail(req, res) {
             message: "Success Get Color",
             results: response
         })
-    } catch(err){
+    } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
             success: false,
             message: err.message
