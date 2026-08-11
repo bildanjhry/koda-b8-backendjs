@@ -17,22 +17,24 @@ export async function findCartDetail(id) {
 export async function createCart(id_user, data) {
     const client = await pool.connect()
     try {
+        await client.query("BEGIN")
         let cart
         const userCart = await getCartByUser(id_user)
-        if(!userCart){
+        if (!userCart) {
             const res = await client.query(`INSERT INTO "cart" ("id_user") 
             VALUES ($1) RETURNING id`, [id_user])
             cart = res.rows[0]
+        } else {
+            cart = userCart
         }
-        cart = userCart
 
-        await client.query(`INSERT INTO "cart_items" ("id_cart", "id_product", "quantity") 
-            VALUES ($1, $2, $3)`, 
+        const item = await client.query(`INSERT INTO "cart_items" ("id_cart", "id_product", "quantity") 
+            VALUES ($1, $2, $3) RETURNING id`,
             [cart.id, data.id_product, data.quantity])
         await client.query("COMMIT")
-        return {
-            id: cart.id
-        }
+        const dataCart = await getCartByUser(id_user)
+        const dataReturn = dataCart?.order_items.filter((item) => item.id === parseInt(data.id_product))
+        return dataReturn
 
     } catch (err) {
         await client.query("ROLLBACK")
