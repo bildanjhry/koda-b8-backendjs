@@ -7,7 +7,7 @@ export async function findAllProd(params){
         page:params.page,
         limit:params.limit,
         total:res.length,
-        next_page:null,
+        next_page:`${process.env.SERVER_URL}/products?page=${parseInt(params.page)+1}`,
         prev_page:null,
         data:res
     }
@@ -22,6 +22,9 @@ export async function findProdBySlugs(slugs){
 }
 
 export async function createProduct(data, image) {
+    if(!image){
+        throw new Error("Image is empty")
+    }
     data.image = image
     return await prodRepository.createProduct(data)
 }

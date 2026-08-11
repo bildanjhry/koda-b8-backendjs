@@ -8,25 +8,11 @@ export async function GetAllProducts(req, res) {
     try {
         const queryParams = qs.parse(req.query)
         const offset = (parseInt(queryParams.page) * parseInt(queryParams.limit)) - parseInt(queryParams.limit)
-        const result = await products.findAll({
-            attributes: {
-                exclude: ["createdAt", "updatedAt"]
-            },
-            limit:queryParams.limit,
-            offset,
-            sort: 'id'
-
-        })
         const response = await prodServices.findAllProd(queryParams)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Get All data",
-            page: queryParams.page,
-            limit: queryParams.limit,
-            total: result.length,
-            next_page: null,
-            prev_page: null,
-            data: result
+            ...response
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -39,6 +25,7 @@ export async function GetAllProducts(req, res) {
 export async function GetProductDetails(req, res) {
     try {
         const slugs = req.params.slugs
+        console.log(slugs)
         const response = await prodServices.findProdBySlugs(slugs)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
@@ -57,7 +44,6 @@ export async function AddProduct(req, res) {
     try {
         const data = req.body
         const imagePath = req?.file?.path || ""
-        console.log(imagePath)
         const response = await prodServices.createProduct(data, imagePath)
         console.log(response)
         res.status(constants.HTTP_STATUS_CREATED).json({

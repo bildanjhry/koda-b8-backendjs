@@ -6,9 +6,9 @@ const storage = multer.diskStorage({
         cb(null, "uploads/")
     },
     filename: function (req, file, cb) {
-        const title = req.body.title
         const fileExt = file.mimetype.split("/")[1]
-        const filename = slugify(req.body.title, req.data.id)
+        const name = Date.now().toString()
+        const filename = slugify(`prod ${name}`, req.data.id)
         cb(null, filename + "." + fileExt)
     }
 })
@@ -31,7 +31,7 @@ export default function uploadMiddleware(fieldName) {
             if (err) {
                 res.status(400).json({
                     success: false,
-                    messsage: err.messsage
+                    message: err.message
                 })
                 return
             }
