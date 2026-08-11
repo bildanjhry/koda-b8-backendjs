@@ -25,7 +25,6 @@ export async function GetAllProducts(req, res) {
 export async function GetProductDetails(req, res) {
     try {
         const slugs = req.params.slugs
-        console.log(slugs)
         const response = await prodServices.findProdBySlugs(slugs)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
@@ -45,7 +44,6 @@ export async function AddProduct(req, res) {
         const data = req.body
         const imagePath = req?.file?.path || ""
         const response = await prodServices.createProduct(data, imagePath)
-        console.log(response)
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true,
             message: "Success Add Product",

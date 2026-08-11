@@ -6,6 +6,7 @@ export async function findAllProd(params) {
     const res = await pool.query(`
         SELECT "products"."id", "products"."id", "products"."title", "products"."price",
         "products"."image", "products"."alt", "products"."slugs",
+        COUNT("products"."id") AS "total_products",
         COUNT("reviews"."id_product") AS "reviews",
         COALESCE(AVG("reviews"."rating"), 0) AS "rating"
         FROM "products" 
@@ -21,6 +22,7 @@ export async function findAllProd(params) {
 }
 
 export async function findProdBySlugs(slugs) {
+    console.log(slugs)
     const res = await pool.query(`
         SELECT "products"."title", "products_variants"."price" AS "price",
         "products"."created_at", "products"."updated_at", "products"."slugs",
@@ -65,6 +67,12 @@ export async function createProduct(data) {
         const prod = prodRes.rows[0]
         await client.query(`UPDATE "products" SET slugs = $1 WHERE id = $2`, [slugify(data.title, prod.id), prod.id])
 
+        await client.query(`INSERT INTO "products_variants"
+        ("id_product", "id_color", "id_size", "stocks", "price", "sku") VALUES 
+        ($1, $2, $3, $4, $5, $6) RETURNING id`, [prod.id, data.id_color, data.id_size, data.stocks, data.price, 'belimudah-sku'])
+
+        client.query(`INSERT INTO "products_categories" ("id_product", "id_category") VALUES ($1, $2)`, [prod.id, data.id_category])
+    
         await client.query("COMMIT")
         return {
             id: prod.id,
@@ -93,7 +101,7 @@ export async function updateProduct(id, data) {
         }
 
         const prodRes = await client.query(`UPDATE "products"
-        SET ${queries}, updated_at = NOW() WHERE id =$${queries.length+1} RETURNING id`, [...val, id])
+        SET ${queries}, updated_at = NOW() WHERE id =$${queries.length + 1} RETURNING id`, [...val, id])
 
         const prod = prodRes.rows[0]
         await client.query("COMMIT")
@@ -112,6 +120,6 @@ export async function addRatingProduct(id, data) {
     const res = await pool.query(`
         INSERT INTO "reviews" ("id_product", "id_user", "rating", "comment")
         VALUES ($1, $2, $3, $4) RETURNING id
-        `,[id, data.id_user, data.rating, data.comment])
+        `, [id, data.id_user, data.rating, data.comment])
     return res.rows[0]
 }

@@ -53,8 +53,6 @@ usersRoutes.get("/checkout-histories", usersControllers.GetUsersCheckoutHis)
 */
 usersRoutes.get("/:id/checkout-histories", usersControllers.GetUserCheckoutHisById)
 
-
-
 /**
  * @swagger
  * /users:
@@ -83,5 +81,5 @@ usersRoutes.get("/:id/checkout-histories", usersControllers.GetUserCheckoutHisBy
  *    security:
  *      - token: []      
 */
-usersRoutes.get("", permissionsMiddleware, usersControllers.GetAllUsers)
+usersRoutes.get("", usersControllers.GetAllUsers)
 export default usersRoutes
