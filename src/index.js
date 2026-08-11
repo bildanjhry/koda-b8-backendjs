@@ -1,4 +1,5 @@
 import express from "express"
+import "babel-register"
 import routes from "./routes/index.js"
 import { connectDB } from "./config/db.js"
 import corsMiddleware from "./middlewares/cors.js"
