@@ -13,11 +13,13 @@ export async function findAllProd(params) {
 
         LEFT JOIN "reviews" ON "reviews"."id_product" = "products"."id"
         
+        WHERE "products"."title" ILIKE $3 
+
         GROUP BY "products"."id", "products"."title", "products"."price",
         "products"."image", "products"."alt", "products"."slugs"
         LIMIT $1 OFFSET $2
         `,
-        [params.limit, finalPage])
+        [params.limit, finalPage, `%${params.search}%`])
     return res.rows
 }
 
