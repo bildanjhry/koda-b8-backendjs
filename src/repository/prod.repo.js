@@ -71,7 +71,7 @@ export async function createProduct(data) {
         ("id_product", "id_color", "id_size", "stocks", "price", "sku") VALUES 
         ($1, $2, $3, $4, $5, $6) RETURNING id`, [prod.id, data.id_color, data.id_size, data.stocks, data.price, 'belimudah-sku'])
 
-        client.query(`INSERT INTO "products_categories" ("id_product", "id_category") VALUES ($1, $2)`, [prod.id, data.id_category])
+        await client.query(`INSERT INTO "products_categories" ("id_product", "id_category") VALUES ($1, $2)`, [prod.id, data.id_category])
     
         await client.query("COMMIT")
         return {
