@@ -120,4 +120,30 @@ cartRoutes.get("/user/:id_user", cartControllers.GetCartDetailByUser)
  */
 cartRoutes.post("/:id_user", cartControllers.CreateCart)
 
+
+/**
+ * @swagger
+ * /carts/item/{id}:
+ *    delete:
+ *     description: delete Cart's item
+ *     tags:
+ *      - Carts
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          description: Item's id
+ *          required: true
+ *          schema:
+ *            type: string
+ *     responses:
+ *        "200":
+ *          description: Success Delete Item
+ *        "400":
+ *          description: Cart's item not found
+ *     security:
+ *        - token: []
+ */
+cartRoutes.delete("/item/:id", cartControllers.deleteCartItemById)
+
+
 export default cartRoutes

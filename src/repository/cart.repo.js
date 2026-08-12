@@ -55,9 +55,10 @@ export async function getCartByUser(id_user) {
         "cart"."id", "cart"."id_user", 
         SUM("products_variants"."price") AS "subtotal",
         SUM("products_variants"."price") AS "total",
+
         json_agg( 
         json_build_object(
-        'id',"cart_items"."id_product", 
+        'id',"cart_items"."id", 
         'name',"products"."title",
         'id_var',"products_variants"."id",
         'price',"products_variants"."price",
@@ -65,6 +66,7 @@ export async function getCartByUser(id_user) {
         'image',"products"."image",
         'color',"colors"."name", 
         'quantity_prod',"cart_items"."quantity")) AS "order_items" 
+
         FROM "cart" JOIN "cart_items" 
         ON "cart_items"."id_cart" = "cart"."id"
         JOIN "products_variants" 
@@ -72,7 +74,9 @@ export async function getCartByUser(id_user) {
         JOIN "colors" ON "colors"."id" = "products_variants"."id_color"
         JOIN "sizes" ON "sizes"."id" = "products_variants"."id_size" 
         JOIN "products" ON "products"."id" = "products_variants"."id_product"
+        
         WHERE "cart"."id_user" = $1 
+        
         GROUP BY "cart"."id", "cart"."id_user"`, [id_user])
     return res.rows[0]
 }

@@ -10,7 +10,7 @@ import { constants } from "http2"
 export default function corsMiddleware(req, res, next){
     const URL = process.env.CLIENT_URL 
     res.setHeader("Access-Control-Allow-Origin", URL)
-    res.setHeader("Access-Control-Allow-Method", "GET, PATCH, PUT, DELETE")
+    res.setHeader("Access-Control-Allow-Methods", "GET, PATCH, PUT, DELETE")
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
     
     if(req.method === "OPTIONS"){
