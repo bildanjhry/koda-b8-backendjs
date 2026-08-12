@@ -1,5 +1,7 @@
 import { constants } from "http2"
 import * as catServices from "../services/cat.svc.js"
+import { default as db} from "../models/index.cjs"
+const { categories } = db
 
 /**
  * @param {import("express").Request} req
@@ -24,11 +26,11 @@ export async function AddCategory(req, res) {
 
 export async function GetAllCategory(req, res){
     try{
-        const response = await catServices.getAllCategory()
+        const result = await categories.findAll()
         res.status(constants.HTTP_STATUS_OK).json({
             success: true, 
             message:"Success Get All Categories",
-            results: response
+            results: result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_NOT_FOUND).json({
@@ -41,11 +43,11 @@ export async function GetAllCategory(req, res){
 export async function GetCatDetail(req, res) {
     try{
         const id = req.params.id
-        const response = await catServices.getCatDetail(id)
+        const result = await categories.findByPk(id)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Get Category",
-            results: response
+            results: result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
