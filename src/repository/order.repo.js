@@ -32,9 +32,10 @@ export async function createOrder(id_user, data) {
         WHERE "order_items"."id_order" = $1 
         `, [order.id]);
 
-        const itemsRes = prod.rows[0]
+        const itemsRes = prod.rows
         let start = itemsRes.subtotal || 0
-        const subtotal = start + (itemsRes.quantity * parseInt(itemsRes.price))
+        const subs = itemsRes.reduce((acc, item) => acc + (parseInt(item.price) * item.quantity), 0)
+        const subtotal = start + subs
 
         await client.query(`UPDATE "orders" SET subtotal=$1, total=$2, status_checkout=$3 
             WHERE id=$4`,

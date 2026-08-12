@@ -59,8 +59,10 @@ export async function getCartByUser(id_user) {
         json_build_object(
         'id',"cart_items"."id_product", 
         'name',"products"."title",
+        'id_var',"products_variants"."id",
         'price',"products_variants"."price",
         'size', "sizes"."name",
+        'image',"products"."image",
         'color',"colors"."name", 
         'quantity_prod',"cart_items"."quantity")) AS "order_items" 
         FROM "cart" JOIN "cart_items" 

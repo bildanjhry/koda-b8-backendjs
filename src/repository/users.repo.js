@@ -6,21 +6,27 @@ export async function findUsersCheckoutHis(params) {
     "profile"."id_user",
     "profile"."fullname",
     "profile"."phone",
+    "users"."email",
 
     json_agg(
         json_build_object(
             'id_order', "orders"."id",
+            'fullname',"profile"."fullname",
+            'phone',"profile"."phone",
+            'email',"users"."email",
             'id_checkout', "checkout_histories"."id",
             'id_payment', "payment_method"."name",
             'id_delivery', "delivery_method"."name",
             'order_status', "checkout_histories"."id_order_status",
+            'total', "orders"."total",  
             'products',
             products.products
         )
     ) AS "checkout_histories"
 
     FROM "profile"
-
+    
+    JOIN "users" ON "users"."id" = "profile"."id_user"
     JOIN "orders" ON "orders"."id_user" = "profile"."id_user"
     LEFT JOIN "checkout_histories" ON "checkout_histories"."id_order" = "orders"."id"
     JOIN (
@@ -39,7 +45,7 @@ export async function findUsersCheckoutHis(params) {
     JOIN "payment_method" ON "payment_method"."id" = "checkout_histories"."id_payment_method"
     JOIN "delivery_method" ON "delivery_method"."id" = "checkout_histories"."id_delivery_method"
     
-    GROUP BY "profile"."id_user", "profile"."fullname", "profile"."phone" LIMIT $1 OFFSET $2`,[params.limit, finnalPage])
+    GROUP BY "profile"."id_user", "profile"."fullname", "profile"."phone", "users"."email" LIMIT $1 OFFSET $2`, [params.limit, finnalPage])
 
     return res.rows
 }
