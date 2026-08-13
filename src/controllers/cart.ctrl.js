@@ -2,7 +2,7 @@ import { constants } from "http2"
 import * as cartServices from "../services/cart.svc.js"
 import qs from "qs"
 import { default as db } from "../models/index.cjs"
-const { cart_items } = db
+const { cart_items, cart } = db
 
 /**
  * @param {import("express").Request} req
@@ -115,6 +115,31 @@ export async function deleteCartItemById(req, res) {
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
             success: false,
+            message: err.message
+        })
+    }
+}
+
+export async function DeleteCartByUser(req, res) {
+    try {
+        const id = req.params.id
+        const response = await cart_items.destroy({
+            where: {
+                id_cart: parseInt(id)
+            }
+        })
+        if (response < 1) {
+            throw new Error("Failed Delete cart")
+        }
+        res.status(constants.HTTP_STATUS_OK).json({
+            success: true,
+            message: "Success delete cart By User",
+            result: response
+        })
+    } catch (err) {
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status: "CART_BY_USER",
             message: err.message
         })
     }

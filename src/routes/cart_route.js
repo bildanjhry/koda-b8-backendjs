@@ -146,4 +146,28 @@ cartRoutes.post("/:id_user", cartControllers.CreateCart)
 cartRoutes.delete("/item/:id", cartControllers.deleteCartItemById)
 
 
+/**
+ * @swagger
+ * /carts/{id}:
+ *    delete:
+ *     description: Delete user Cart
+ *     tags:
+ *      - Carts
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          description: Cart's id
+ *          required: true
+ *          schema:
+ *            type: string
+ *     responses:
+ *        "200":
+ *          description: Success Delete Cart
+ *        "400":
+ *          description: Cart's not found
+ *     security:
+ *        - token: []
+ */
+cartRoutes.delete("/:id", cartControllers.DeleteCartByUser)
+
 export default cartRoutes

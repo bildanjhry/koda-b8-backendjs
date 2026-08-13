@@ -61,6 +61,7 @@ export async function getCartByUser(id_user) {
         'id',"cart_items"."id", 
         'name',"products"."title",
         'id_var',"products_variants"."id",
+        'id_cart',"cart"."id",
         'price',"products_variants"."price",
         'size', "sizes"."name",
         'image',"products"."image",
