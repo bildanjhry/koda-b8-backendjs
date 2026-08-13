@@ -29,6 +29,8 @@ export async function findProdBySlugs(slugs) {
         SELECT "products"."title", "products_variants"."price" AS "price",
         "products"."created_at", "products"."updated_at", "products"."slugs",
         "products"."image", "products"."alt", SUM("products_variants"."stocks") AS "stocks",
+        COUNT("reviews"."id_product") AS "reviews",
+        COALESCE(AVG("reviews"."rating"), 0) AS "rating",
         json_agg( json_build_object('id', "colors"."id", 'name',"colors"."name", 'hex',"colors"."hex")) AS "avail_colors",
         json_agg( json_build_object('id', "sizes"."id", 'name',"sizes"."name")) AS "avail_sizes",
 
@@ -46,6 +48,7 @@ export async function findProdBySlugs(slugs) {
         JOIN "products_variants" ON "products_variants"."id_product" = "products"."id"
         JOIN "sizes" ON "sizes"."id" = "products_variants"."id_size"
         JOIN "colors" ON "colors"."id" = "products_variants"."id_color"
+        LEFT JOIN "reviews" ON "reviews"."id_product" = "products"."id"
 
         WHERE slugs = $1
         
@@ -74,7 +77,7 @@ export async function createProduct(data) {
         ($1, $2, $3, $4, $5, $6) RETURNING id`, [prod.id, data.id_color, data.id_size, data.stocks, data.price, 'belimudah-sku'])
 
         await client.query(`INSERT INTO "products_categories" ("id_product", "id_category") VALUES ($1, $2)`, [prod.id, data.id_category])
-    
+
         await client.query("COMMIT")
         return {
             id: prod.id,
