@@ -98,4 +98,60 @@ orderRoutes.get("", orderControllers.GetAllOrder)
  */
 orderRoutes.post("", orderControllers.CreateOrder)
 
+/**
+ * @swagger
+ * /orders/status:
+ *   get:
+ *    description: Get all available order status
+ *    tags:
+ *     - Orders
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *          default: 1
+ *        description: Page number
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *          default: 20
+ *        description: Limit data
+ *    responses:
+ *      "200":
+ *        description: Success get all order status
+ *      "500":
+ *        description: Internal server error
+ *    security:
+ *      - token: []
+ */
+orderRoutes.get("/status", orderControllers.GetAllOrderStatus)
+
+/**
+ * @swagger
+ * /orders/status:
+ *   post:
+ *     description: Add new order status
+ *     tags:
+ *      - Orders
+ *     requestBody:
+ *       description: Add new order
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *             schema:
+ *                type: object
+ *                properties:
+ *                   name:
+ *                      type: string
+ *     responses:
+ *      "200": 
+ *        description: Success add cart items
+ *      "500":
+ *        description: Internal server error
+ *     security:
+ *        - token: []
+ */
+orderRoutes.post("/status", permissionsMiddleware, orderControllers.CreateOrderStatus)
+
 export default orderRoutes

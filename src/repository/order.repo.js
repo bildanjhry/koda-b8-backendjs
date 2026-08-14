@@ -42,8 +42,8 @@ export async function createOrder(id_user, data) {
             [subtotal, subtotal, 1, parseInt(order.id)])
 
         await client.query(`INSERT INTO "checkout_histories" 
-            ("id_user", "id_order", "id_payment_method", "id_delivery_method")
-            VALUES ($1, $2, $3, $4)`, [id_user, parseInt(order.id), data.id_payment_method, data.id_delivery_method])
+            ("id_user", "id_order", "id_payment_method", "id_delivery_method", "id_order_status")
+            VALUES ($1, $2, $3, $4, $5)`, [id_user, parseInt(order.id), data.id_payment_method, data.id_delivery_method, 2])
 
         await client.query("COMMIT")
         return {

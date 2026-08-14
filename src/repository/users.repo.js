@@ -17,7 +17,8 @@ export async function findUsersCheckoutHis(params) {
             'id_checkout', "checkout_histories"."id",
             'id_payment', "payment_method"."name",
             'id_delivery', "delivery_method"."name",
-            'order_status', "checkout_histories"."id_order_status",
+            'id_order_status', "order_status"."id",
+            'order_status', "order_status"."name",
             'total', "orders"."total",  
             'products',
             products.products
@@ -44,7 +45,8 @@ export async function findUsersCheckoutHis(params) {
 
     JOIN "payment_method" ON "payment_method"."id" = "checkout_histories"."id_payment_method"
     JOIN "delivery_method" ON "delivery_method"."id" = "checkout_histories"."id_delivery_method"
-    
+    LEFT JOIN "order_status" ON "order_status"."id" = "checkout_histories"."id_order_status"
+
     GROUP BY "profile"."id_user", "profile"."fullname", "profile"."phone", "users"."email" LIMIT $1 OFFSET $2`, [params.limit, finnalPage])
 
     return res.rows
@@ -64,7 +66,8 @@ export async function findUsersCheckoutHisByid(id_user) {
             'total', "orders"."total",
             'payment_method', "payment_method"."name",
             'delivery_method', "delivery_method"."name",
-            'order_status', "checkout_histories"."id_order_status",
+            'id_order_status', "order_status"."id",
+            'order_status', "order_status"."name",
             'products',
             products.products
         )
@@ -96,6 +99,7 @@ export async function findUsersCheckoutHisByid(id_user) {
 
     JOIN "payment_method" ON "payment_method"."id" = "checkout_histories"."id_payment_method"
     JOIN "delivery_method" ON "delivery_method"."id" = "checkout_histories"."id_delivery_method"
+    LEFT JOIN "order_status" ON "order_status"."id" = "checkout_histories"."id_order_status"
 
     WHERE "profile"."id_user" = $1
 
