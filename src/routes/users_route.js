@@ -24,12 +24,12 @@ const usersRoutes = Router()
  *          type: integer
  *          default: 20
  *        description: Limit data
- *   responses:
+ *    responses:
  *      "200":
  *        description: Success get all users's checkout histories
  *      "500":
  *        description: Internal server error
- *   security:
+ *    security:
  *      - token: []      
 */
 usersRoutes.get("/checkout-histories", permissionsMiddleware, usersControllers.GetUsersCheckoutHis)
