@@ -47,11 +47,11 @@ export async function GetAllSizes(req, res){
 export async function GetSizeDetail(req, res) {
     try{
         const id = req.params.id
-        const response = await sizesServices.GetSizeDetail(id)
+        const result = await sizes.findByPk(parseInt(id))
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Get Size",
-            results: response
+            results: result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({

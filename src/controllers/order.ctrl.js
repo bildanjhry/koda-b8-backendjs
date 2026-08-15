@@ -3,7 +3,6 @@ import * as orderRepository from "../repository/order.repo.js"
 import { default as db} from "../models/index.cjs"
 const { order_status } = db
 
-
 /**
  * @param {import("express").Request} req
  * @param {import("express").Response} res 

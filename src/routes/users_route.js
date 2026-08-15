@@ -24,13 +24,15 @@ const usersRoutes = Router()
  *          type: integer
  *          default: 20
  *        description: Limit data
-*    responses:
+ *   responses:
  *      "200":
  *        description: Success get all users's checkout histories
  *      "500":
- *        description: Internal server error      
+ *        description: Internal server error
+ *   security:
+ *      - token: []      
 */
-usersRoutes.get("/checkout-histories", usersControllers.GetUsersCheckoutHis)
+usersRoutes.get("/checkout-histories", permissionsMiddleware, usersControllers.GetUsersCheckoutHis)
 
 /**
  * @swagger
@@ -49,7 +51,9 @@ usersRoutes.get("/checkout-histories", usersControllers.GetUsersCheckoutHis)
  *      "200":
  *        description: Success get all users's checkout histories
  *      "500":
- *        description: Internal server error      
+ *        description: Internal server error
+ *    security:
+ *      - token: []      
 */
 usersRoutes.get("/:id/checkout-histories", usersControllers.GetUserCheckoutHisById)
 
@@ -81,5 +85,5 @@ usersRoutes.get("/:id/checkout-histories", usersControllers.GetUserCheckoutHisBy
  *    security:
  *      - token: []      
 */
-usersRoutes.get("", usersControllers.GetAllUsers)
+usersRoutes.get("", permissionsMiddleware, usersControllers.GetAllUsers)
 export default usersRoutes
