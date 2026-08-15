@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('address', {
     id: {
       autoIncrement: true,
@@ -35,6 +35,14 @@ module.exports = function(sequelize, DataTypes) {
     optional: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      field: 'created_at'
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      field: 'updated_at'
     }
   }, {
     sequelize,

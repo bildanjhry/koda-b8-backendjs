@@ -10,12 +10,15 @@ const { payment_method } = db
 */
 export async function CreatePayment(req, res) {
     try {
-        const data = req.body
-        const response = await paymentServices.addPayment(data)
+        const { name, desc } = req.body
+        const result = await payment_method.create({
+            name:name,
+            desc:desc
+        })
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true,
             message: "Success add new payment",
-            results: response
+            results: result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({

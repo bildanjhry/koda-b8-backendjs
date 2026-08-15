@@ -35,7 +35,6 @@ export async function AddColor(req, res) {
 export async function GetAllColors(req, res) {
     try {
         const result = await colors.findAll()
-        const response = await colorsServices.getAllColors()
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Get All Colors",
@@ -52,11 +51,11 @@ export async function GetAllColors(req, res) {
 export async function GetColorDetail(req, res) {
     try {
         const id = req.params.id
-        const response = await colorsServices.getColorDetail(id)
+        const result = await findByPk(parseInt(id))
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Get Color",
-            results: response
+            results: result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({

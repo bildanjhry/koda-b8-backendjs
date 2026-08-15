@@ -1,5 +1,7 @@
 import { constants } from "http2"
 import * as sizesServices from "../services/sizes.svc.js"
+import { default as db} from "../models/index.cjs"
+const { sizes } = db
 
 /**
  * @param {import("express").Request} req
@@ -8,11 +10,15 @@ import * as sizesServices from "../services/sizes.svc.js"
 export async function AddSize(req, res) {
     try{
         const data = req.body
+        const { name } = req.body
+        const result = await sizes.create({
+            name:name
+        })
         const response = await sizesServices.addSize(data)
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true, 
             message: "Success Add Size",
-            results: response
+            results: result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -24,11 +30,11 @@ export async function AddSize(req, res) {
 
 export async function GetAllSizes(req, res){
     try{
-        const response = await sizesServices.getAllSizes()
+        const result = await sizes.findAll()
         res.status(constants.HTTP_STATUS_OK).json({
             success: true, 
             message:"Success Get All Sizes",
-            results: response
+            results: result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_NOT_FOUND).json({

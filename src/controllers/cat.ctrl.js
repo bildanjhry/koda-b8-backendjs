@@ -2,19 +2,20 @@ import { constants } from "http2"
 import * as catServices from "../services/cat.svc.js"
 import { default as db} from "../models/index.cjs"
 const { categories } = db
-
 /**
  * @param {import("express").Request} req
  * @param {import("expresss").Response} res  
 */
 export async function AddCategory(req, res) {
     try{
-        const data = req.body
-        const response = await catServices.addCategory(data)
+        const { name } = req.body
+        const result = await categories.create({
+            name:name
+        })
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true, 
             message: "Success Create Category",
-            results: response
+            results: result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({

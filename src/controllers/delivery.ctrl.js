@@ -11,11 +11,16 @@ const { delivery_method } = db
 export async function CreateDelivery(req, res) {
     try {
         const data = req.body
+        const {name, desc} = req.body
+        const result = await delivery_method.create({
+            name:name,
+            desc:desc
+        })
         const response = await deliveryServices.addDelivery(data)
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true,
             message: "Success add new delivery",
-            results: response
+            results: result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -34,7 +39,6 @@ export async function GetAllDeliveries(req, res) {
             offset,
             sort: 'id'
         })
-        const response = await deliveryServices.findAllDeliveries(queryParams)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success get all delivery method",
