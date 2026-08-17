@@ -2,7 +2,7 @@ import { constants } from "http2"
 import * as cartServices from "../services/cart.svc.js"
 import qs from "qs"
 import { default as db } from "../models/index.cjs"
-const { cart_items, cart } = db
+const { cart_items, cart, sequelize } = db
 
 /**
  * @param {import("express").Request} req
@@ -11,11 +11,16 @@ const { cart_items, cart } = db
 export async function GetAllCart(req, res) {
     try {
         const queryParams = qs.parse(req.query)
-        const response = await cartServices.findAllCart(queryParams)
+        const finalPage = (queryParams.page * queryParams.limit) - queryParams.limit
+        const result = await cart.findAll({
+            limit: queryParams.limit,
+            offset: finalPage
+        })
+
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Get All User's Cart",
-            ...response
+            ...result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
@@ -28,11 +33,11 @@ export async function GetAllCart(req, res) {
 export async function GetCartDetail(req, res) {
     try {
         const id = req.params.id
-        const response = await cartServices.findCartDetail(id)
+        const result = await cart.findByPk(parseInt(id))
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Get All User's Cart",
-            result: response
+            result: result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -43,16 +48,59 @@ export async function GetCartDetail(req, res) {
 }
 
 export async function CreateCart(req, res) {
+    const transaction = await sequelize.transaction();
     try {
         const id_user = req.data.id
         const data = req.body
-        const response = await cartServices.createCart(id_user, data)
+        let userCart = await cart.findOne({
+            where: {
+                id_user
+            },
+            transaction
+        });
+
+        if (!userCart) {
+            userCart = await cart.create(
+                {
+                    id_user
+                },
+                { transaction }
+            );
+        }
+
+        const item = await cart_items.create(
+            {
+                id_cart: userCart.id,
+                id_product: data.id_product,
+                quantity: data.quantity
+            },
+            { transaction }
+        );
+
+        await transaction.commit();
+        const dataCart = await cart.findOne({
+            where: {
+                id_user
+            },
+            include: [
+                {
+                    model: cart_items,
+                    as: "cart_items"
+                }
+            ]
+        })
+
+        const dataReturn = dataCart?.cart_items.filter(
+            (item) => item.id_product === Number(data.id_product)
+        )
+        // const response = await cartServices.createCart(id_user, data)
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true,
             message: "Success Add to Cart",
-            results: response
+            results: dataReturn
         })
     } catch (err) {
+        await transaction.rollback();
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
             success: false,
             message: err.message
@@ -63,11 +111,16 @@ export async function CreateCart(req, res) {
 export async function GetCartItemsDetail(req, res) {
     try {
         const id_cart = req.params.id
+        const result = await cart_items.findOne({
+            where: {
+                id_cart: parseInt(id_cart)
+            }
+        })
         const response = await cartServices.findCartItemsDetail(id_cart)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Get Cart Items",
-            result: response
+            result: result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('cart_items', {
     id: {
       autoIncrement: true,
@@ -27,6 +27,14 @@ module.exports = function(sequelize, DataTypes) {
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      field: 'created_at'
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      field: 'updated_at'
     }
   }, {
     sequelize,
