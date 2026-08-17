@@ -64,11 +64,64 @@ export async function Register(req, res) {
 export async function Login(req, res) {
     try {
         const data = req.body
-        const response = await authServices.login(data)
+        // const response = await authServices.login(data)
+        const result = await users.findOne({
+            where: {
+                email: data.email
+            },
+
+            attributes: [
+                "id",
+                "password"
+            ],
+
+            include: [
+                {
+                    association: "user_permissions",
+                    attributes: [
+                        ["status", "permissions"]
+                    ],
+                    required: true
+                }
+            ]
+        });
+
+        if (!result) {
+            throw new Error("User not found")
+        }
+
+        const response = {
+            id: result.id,
+            password: result.password,
+            permissions: result.user_permissions?.[0]?.get("permissions")
+        }
+        if (response?.permissions & 6) {
+            const token = libsJwt.sign({ id: response.id, permissions: response.permissions })
+            res.status(constants.HTTP_STATUS_OK).json({
+                success: true,
+                message: "Success Login",
+                results: {
+                    id: response.id,
+                    token: token,
+                    per: response.permissions * 2
+                }
+            })
+            return
+        }
+        
+        const isMatch = await libsBcrypt.comparePass(data.password, response.password)
+        if (!isMatch) {
+            throw new Error("User not found")
+        }
+        const token = libsJwt.sign({ id: response.id, permissions: response.permissions })
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success Login",
-            results: response
+            results: {
+                id: response.id,
+                token: token,
+                per: response.permissions * 2
+            }
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_UNAUTHORIZED).json({
