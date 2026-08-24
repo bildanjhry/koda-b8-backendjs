@@ -14,8 +14,8 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING(40),
       allowNull: true,
       is: {
-        args: /^[a-zA-Z0-9_]+$/,
-        msg: "Username hanya boleh huruf, angka, dan underscore"
+        args: /^[a-zA-Z0-9]+$/,
+        msg: "Username only accepts alphabets and numbers"
       }
     },
     username: {
