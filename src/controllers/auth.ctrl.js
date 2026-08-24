@@ -4,6 +4,7 @@ import { default as db } from "../models/index.cjs"
 const { sequelize, users, profile, user_permissions } = db
 import libsJwt from "../libs/jwt.js"
 import libsBcrypt from "../libs/bcrypt.js"
+import argon2 from "argon2"
 
 /**
  * 
@@ -18,7 +19,7 @@ export async function Register(req, res) {
         const hashedPass = await libsBcrypt.hashed(password)
         const user = await users.create({
             email: email,
-            password: hashedPass
+            password: password
         },
             { transaction }
         )
@@ -52,7 +53,6 @@ export async function Register(req, res) {
             results: results
         })
     } catch (err) {
-        console.log(err)
         await transaction.rollback();
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
             success: false,
@@ -63,11 +63,11 @@ export async function Register(req, res) {
 
 export async function Login(req, res) {
     try {
-        const data = req.body
+        const {email, password} = req.body
         // const response = await authServices.login(data)
         const result = await users.findOne({
             where: {
-                email: data.email
+                email: email
             },
 
             attributes: [
@@ -108,9 +108,10 @@ export async function Login(req, res) {
             })
             return
         }
-        
-        const isMatch = await libsBcrypt.comparePass(data.password, response.password)
-        if (!isMatch) {
+
+      //  const isMatch = await libsBcrypt.comparePass(data.password, response.password)
+        const isPassMatch = await argon2.verify(result.password, password)
+        if (!isPassMatch) {
             throw new Error("User not found")
         }
         const token = libsJwt.sign({ id: response.id, permissions: response.permissions })
