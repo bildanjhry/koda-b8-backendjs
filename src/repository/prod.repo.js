@@ -4,7 +4,7 @@ import slugify from "../libs/slugify.js";
 export async function findAllProd(params) {
     const finalPage = (params.page * params.limit) - params.limit
     const res = await pool.query(`
-        SELECT "products"."id", "products"."id", "products"."title", "products"."price",
+        SELECT "products"."id", "products"."title", "products"."price",
         "products"."image", "products"."alt", "products"."slugs",
         COUNT("products"."id") AS "total_products",
         COUNT("reviews"."id_product") AS "reviews",
@@ -74,9 +74,12 @@ export async function createProduct(data) {
 
         await client.query(`INSERT INTO "products_variants"
         ("id_product", "id_color", "id_size", "stocks", "price", "sku") VALUES 
-        ($1, $2, $3, $4, $5, $6) RETURNING id`, [prod.id, data.id_color, data.id_size, data.stocks, data.price, 'belimudah-sku'])
+        ($1, $2, $3, $4, $5, $6) RETURNING id`, 
+        [prod.id, data.id_color, data.id_size, data.stocks, data.price, 'belimudah-sku'])
 
-        await client.query(`INSERT INTO "products_categories" ("id_product", "id_category") VALUES ($1, $2)`, [prod.id, data.id_category])
+        await client.query(`
+            INSERT INTO "products_categories" ("id_product", "id_category") VALUES ($1, $2)`, 
+            [prod.id, data.id_category])
 
         await client.query("COMMIT")
         return {

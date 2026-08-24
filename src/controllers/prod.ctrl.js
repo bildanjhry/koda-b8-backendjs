@@ -2,17 +2,74 @@ import { constants } from "http2"
 import qs from "qs"
 import * as prodServices from "../services/prod.svc.js"
 import { default as db } from "../models/index.cjs"
-const { products } = db
+const {
+    products,
+    reviews,
+    products_variants,
+    colors,
+    sizes, } = db
+
+import { Op, fn, col, literal } from "sequelize"
 
 export async function GetAllProducts(req, res) {
     try {
         const queryParams = qs.parse(req.query)
         const offset = (parseInt(queryParams.page) * parseInt(queryParams.limit)) - parseInt(queryParams.limit)
-        const response = await prodServices.findAllProd(queryParams)
+        const limit = queryParams.limit
+        const result = await products.findAll({
+            subQuery: false,
+
+            attributes: [
+                "id",
+                "title",
+                "price",
+                "image",
+                "alt",
+                "slugs",
+
+                [
+                    fn("COUNT", col("reviews.id")),
+                    "reviews"
+                ],
+
+                [
+                    fn("COALESCE", fn("AVG", col("reviews.rating")), 0),
+                    "rating"
+                ]
+            ],
+
+            include: [
+                {
+                    model: reviews,
+                    as: "reviews",
+                    attributes: [],
+                    required: false
+                }
+            ],
+
+            where: {
+                title: {
+                    [Op.iLike]: `%${queryParams.search || ""}%`
+                }
+            },
+
+            group: [
+                "products.id",
+                "products.title",
+                "products.price",
+                "products.image",
+                "products.alt",
+                "products.slugs"
+            ],
+
+            limit,
+            offset,
+
+        })
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Get All data",
-            ...response
+            ...result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -25,11 +82,132 @@ export async function GetAllProducts(req, res) {
 export async function GetProductDetails(req, res) {
     try {
         const slugs = req.params.slugs
-        const response = await prodServices.findProdBySlugs(slugs)
+
+        const result = await products.findOne({
+            subQuery: false,
+
+            attributes: [
+                "title",
+
+                [
+                    col("products_variants.price"),
+                    "price"
+                ],
+
+                "created_at",
+                "updated_at",
+                "slugs",
+                "image",
+                "alt",
+
+                [
+                    fn("SUM", col("products_variants.stocks")),
+                    "stocks"
+                ],
+
+                [
+                    fn("COUNT", col("reviews.id_product")),
+                    "reviews"
+                ],
+
+                [
+                    literal(`COALESCE(AVG("reviews"."rating"), 0)`),
+                    "rating"
+                ],
+
+                [
+                    literal(`
+                json_agg(
+                    DISTINCT jsonb_build_object(
+                        'id', "products_variants->id_color_color"."id",
+                        'name', "products_variants->id_color_color"."name",
+                        'hex', "products_variants->id_color_color"."hex"
+                    )
+                )
+            `),
+                    "avail_colors"
+                ],
+
+                [
+                    literal(`
+                json_agg(
+                    DISTINCT jsonb_build_object(
+                        'id', "products_variants->id_size_size"."id",
+                        'name', "products_variants->id_size_size"."name"
+                    )
+                )
+            `),
+                    "avail_sizes"
+                ],
+
+                [
+                    literal(`
+                json_agg(
+                    jsonb_build_object(
+                        'id', "products_variants"."id_product",
+                        'id_variant', "products_variants"."id",
+                        'color', "products_variants->id_color_color"."name",
+                        'size', "products_variants->id_size_size"."name",
+                        'stock', "products_variants"."stocks",
+                        'SKU', "products_variants"."sku"
+                    )
+                )
+            `),
+                    "items"
+                ]
+            ],
+
+            include: [
+                {
+                    model: products_variants,
+                    as: "products_variants",
+                    attributes: [],
+                    required: true,
+
+                    include: [
+                        {
+                            model: colors,
+                            as: "id_color_color",
+                            attributes: [],
+                            required: true
+                        },
+                        {
+                            model: sizes,
+                            as: "id_size_size",
+                            attributes: [],
+                            required: true
+                        }
+                    ]
+                },
+
+                {
+                    model: reviews,
+                    as: "reviews",
+                    attributes: [],
+                    required: false
+                }
+            ],
+
+            where: {
+                slugs
+            },
+
+            group: [
+                "products.id",
+                "products.title",
+                "products.created_at",
+                "products.updated_at",
+                "products.slugs",
+                "products.image",
+                "products.alt",
+                "products_variants.price"
+            ],
+        })
+
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success get Product",
-            results: response
+            results: result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -80,12 +258,20 @@ export async function AddRatingProduct(req, res) {
     try {
         const id = req.params.id
         const id_user = req.data.id
-        const data = req.body
-        const response = await prodServices.addRatingProduct(id, id_user, data)
+        const {rating, comment} = req.body
+
+        const result = await reviews.create({
+            id_product:parseInt(id),
+            id_user:parseInt(id_user),
+            rating:rating,
+            comment:comment
+        })
+
+       // const response = await prodServices.addRatingProduct(id, id_user, data)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success add rating product",
-            results: response
+            results: result
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
