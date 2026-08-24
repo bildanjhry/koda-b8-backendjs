@@ -12,7 +12,11 @@ module.exports = function (sequelize, DataTypes) {
     },
     fullname: {
       type: DataTypes.STRING(40),
-      allowNull: true
+      allowNull: true,
+      is: {
+        args: /^[a-zA-Z0-9_]+$/,
+        msg: "Username hanya boleh huruf, angka, dan underscore"
+      }
     },
     username: {
       type: DataTypes.STRING(40),
@@ -20,7 +24,13 @@ module.exports = function (sequelize, DataTypes) {
     },
     phone: {
       type: DataTypes.STRING(13),
-      allowNull: true
+      allowNull: true,
+      validate: {
+        is: {
+          args: /^(?:\+62|62|0)8[1-9][0-9]{7,10}$/,
+          msg: "Invalid Phone Number"
+        }
+      }
     },
     address_ID: {
       type: DataTypes.ARRAY(DataTypes.INTEGER),

@@ -1,3 +1,4 @@
+const argon2 = require('argon2')
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('users', {
@@ -10,7 +11,13 @@ module.exports = function (sequelize, DataTypes) {
     },
     email: {
       type: DataTypes.STRING(40),
-      allowNull: true
+      allowNull: true,
+      unique: true,
+      validate: {
+        isEmail: {
+          msg: "Email not valid"
+        }
+      }
     },
     password: {
       type: DataTypes.STRING(100),
@@ -37,6 +44,16 @@ module.exports = function (sequelize, DataTypes) {
           { name: "id" },
         ]
       },
-    ]
+    ],
+    hooks: {
+      beforeCreate: async function(user){
+        user.password = await argon2.hash(user.password)
+      },
+      beforeUpdate: async function(user){
+        if(user.change("password")){
+          user.password = await argon2.hash(user.password)
+        }
+      }
+    }
   });
 };
