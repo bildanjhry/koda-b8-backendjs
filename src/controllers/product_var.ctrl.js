@@ -1,6 +1,8 @@
 import { constants } from "http2"
 import qs from "qs"
 import * as prodVarServices from "../services/product_var.svc.js"
+import { default as db } from "../models/index.cjs"
+const { products_variants } = db
 
 export async function GetAllProductsVar(req, res) {
     try {
@@ -21,12 +23,13 @@ export async function GetAllProductsVar(req, res) {
 
 export async function GetProductVarDetails(req, res) {
     try{
-        const slugs = req.params.slugs
-        const response = await prodVarServices.findProdVarById(id)
+        const id = req.params.id
+        // const response = await prodVarServices.findProdVarById(id)
+        const result = await products_variants.findByPk(parseInt(id))
         res.status(constants.HTTP_STATUS_OK).json({
             success: true, 
             message: "Success get Product",
-            results:response
+            results:result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -38,12 +41,28 @@ export async function GetProductVarDetails(req, res) {
 
 export async function AddProductVar(req, res) {
     try{
-        const data = req.body
-        const response = await prodVarServices.createProductVar(data)
+        const {
+            id_product, 
+            id_color, 
+            id_size, 
+            stocks, 
+            price, 
+            sku} = req.body
+
+       // const response = await prodVarServices.createProductVar(data)
+
+        const result = await products_variants.create({
+            id_product:id_product,
+            id_color:id_color,
+            id_size:id_size,
+            stocks:stocks,
+            price:price,
+            sku:sku
+        })
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true, 
             message:"Success Add Product",
-            results: response
+            results: result
         })
     } catch(err){
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({

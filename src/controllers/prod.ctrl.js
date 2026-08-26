@@ -237,14 +237,44 @@ export async function AddProduct(req, res) {
 
 export async function UpdateProduct(req, res) {
     try {
-        const data = req.body
+        const { title, description, price, alt } = req.body
         const id = req.params.id
         const imagePath = req?.file?.path || ""
-        const response = await prodServices.updateProduct(id, data, imagePath)
+
+        const product = await products.findByPk(parseInt(id))
+        if (!product) {
+            const err = {}
+            err.code = 404
+            err.message = "Product not found"
+            throw err
+        }
+
+        if (title !== product.title) {
+            product.title = title
+        }
+
+        if (alt !== product.alt) {
+            product.alt = alt
+        }
+
+        if (description !== product.description) {
+            product.description = description
+        }
+
+        if (price !== product.price) {
+            product.price = price
+        }
+
+        if (imagePath !== product.image) {
+            product.image = imagePath
+        }
+
+        await product.save()
+
         res.status(constants.HTTP_STATUS_CREATED).json({
             success: true,
             message: "Success Update Product",
-            results: response
+            results: product
         })
     } catch (err) {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
@@ -258,16 +288,15 @@ export async function AddRatingProduct(req, res) {
     try {
         const id = req.params.id
         const id_user = req.data.id
-        const {rating, comment} = req.body
+        const { rating, comment } = req.body
 
         const result = await reviews.create({
-            id_product:parseInt(id),
-            id_user:parseInt(id_user),
-            rating:rating,
-            comment:comment
+            id_product: parseInt(id),
+            id_user: parseInt(id_user),
+            rating: rating,
+            comment: comment
         })
 
-       // const response = await prodServices.addRatingProduct(id, id_user, data)
         res.status(constants.HTTP_STATUS_OK).json({
             success: true,
             message: "Success add rating product",
