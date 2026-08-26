@@ -3,7 +3,6 @@ import * as authServices from "../services/auth.svc.js"
 import { default as db } from "../models/index.cjs"
 const { sequelize, users, profile, user_permissions } = db
 import libsJwt from "../libs/jwt.js"
-import libsBcrypt from "../libs/bcrypt.js"
 import argon2 from "argon2"
 
 /**
@@ -16,7 +15,7 @@ export async function Register(req, res) {
     const transaction = await sequelize.transaction();
     try {
         const { email, password, fullname } = req.body
-        const hashedPass = await libsBcrypt.hashed(password)
+       // const hashedPass = await libsBcrypt.hashed(password)
         const user = await users.create({
             email: email,
             password: password

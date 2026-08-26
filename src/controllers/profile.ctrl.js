@@ -26,7 +26,6 @@ export async function GetAllProfile(req, res) {
 export async function GetProfileDetail(req, res) {
 	try {
 		const id = req.params.id
-		console.log(Object.keys(profile.associations));
 		const result = await profile.findOne({
 			where: {
 				id_user: id
@@ -74,12 +73,37 @@ export async function GetProfileDetail(req, res) {
 	}
 }
 
-
 export async function UpdateProfile(req, res) {
 	try {
 		const id = req.params.id
-		const data = req.body
-		const response = await profileServices.updateProfile(id, data)
+		const {fullname, username, email, phone} = req.body
+		const user = await profile.findByPk(parseInt(id))
+		if(!user){
+			const err = {}
+			err.code = 404
+			err.message = "User not found"
+			throw err
+		}
+
+		if(fullname !== user.fullname){
+			user.fullname = fullname
+		}
+
+		if(username !== user.username) {
+			user.username = username
+		}
+
+		if(email !== user.email){
+			user.email = email
+		}
+
+		if(phone !== user.phone){
+			user.phone = phone
+		}
+
+		await user.save()
+
+		//await profileServices.updateProfile(id, data)
 		res.status(constants.HTTP_STATUS_OK).json({
 			success: true,
 			message: "Success update profile",

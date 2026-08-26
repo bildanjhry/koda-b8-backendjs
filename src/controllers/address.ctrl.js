@@ -38,6 +38,7 @@ export async function CreateAddress(req, res) {
             fulladdress:fulladdress,
             province:province,
             city:city,
+            postcode:postcode,
             optional:optional
         })
         res.status(constants.HTTP_STATUS_OK).json({

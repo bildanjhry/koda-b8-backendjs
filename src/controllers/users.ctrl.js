@@ -41,7 +41,6 @@ export async function GetUserCheckoutHisById(req, res) {
     }
 }
 
-
 export async function GetAllUsers(req, res) {
     try {
         const result = await users.findAll({
@@ -50,7 +49,6 @@ export async function GetAllUsers(req, res) {
             }
         })
         const queryParams = qs.parse(req.query)
-        const response = await usersServices.findAllUsers(queryParams)
         res.status(constants.HTTP_STATUS_OK).json({
             succes: true,
             message: "Succes get all users",
